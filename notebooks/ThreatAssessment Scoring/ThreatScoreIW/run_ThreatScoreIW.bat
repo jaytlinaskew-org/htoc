@@ -10,9 +10,14 @@ REM - Optional offline wheelhouse fallback
 REM ============================================================================
 echo [%date% %time%] Starting ThreatScoreIW...
 
+REM ── HTOC on the file server (UNC) — Task Scheduler often has no mapped Z: ──
+REM Same share as scripts\batch-processing-script\I&W_Automation\Generate_Report.bat
+REM Override: set HTOC_SHARE_ROOT=\\server\share\HTOC before calling this .bat.
+if not defined HTOC_SHARE_ROOT set "HTOC_SHARE_ROOT=\\10.1.4.22\data\HTOC"
+
 REM ── Set the Python executable path ──────────────────────────────────────────
 REM You can override by setting PYTHON_EXE before calling this .bat.
-if not defined PYTHON_EXE set "PYTHON_EXE=Z:\HTOC\JA\Python313\python.exe"
+if not defined PYTHON_EXE set "PYTHON_EXE=%HTOC_SHARE_ROOT%\JA\Python313\python.exe"
 
 REM ── Set script + working directory ─────────────────────────────────────────
 set "WORK_DIR=%~dp0"
@@ -22,10 +27,10 @@ REM ── Set log directory ─────────────────
 set "LOG_DIR=%WORK_DIR%logs"
 
 REM ── Optional offline wheelhouse folder (create once) ───────────────────────
-if not defined WHEELHOUSE set "WHEELHOUSE=Z:\HTOC\JA\wheelhouse"
+if not defined WHEELHOUSE set "WHEELHOUSE=%HTOC_SHARE_ROOT%\JA\wheelhouse"
 
 REM ── Expected Excel output directory (from script) ──────────────────────────
-set "OUTPUT_DIR=Z:\HTOC\Data_Analytics\Data\Threat Assessment Scores\ThreatAssessI_W"
+set "OUTPUT_DIR=%HTOC_SHARE_ROOT%\Data_Analytics\Data\Threat Assessment Scores\ThreatAssessI_W"
 
 REM ── Create log directory if it doesn't exist ───────────────────────────────
 if not exist "%LOG_DIR%" (
