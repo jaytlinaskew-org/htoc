@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-labelledby="mtitle mdesc">
+  <title id="mtitle">PRISM mark</title>
+  <desc id="mdesc">Fancy app icon: glass prism, data cloud, severity output.</desc>
+  <defs>
+    <linearGradient id="mBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A237E"/>
+      <stop offset="100%" stop-color="#0D1640"/>
+    </linearGradient>
+    <radialGradient id="mGlow" cx="30%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#5C6BC0" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#1A237E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mPrismF" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8EAF6"/>
+      <stop offset="100%" stop-color="#9FA8DA"/>
+    </linearGradient>
+    <linearGradient id="mPrismS" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#B8C2F0"/>
+      <stop offset="100%" stop-color="#6D7DD6"/>
+    </linearGradient>
+    <linearGradient id="mPrismT" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#9FA8DA"/>
+    </linearGradient>
+    <linearGradient id="mBarR" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FF8A80"/><stop offset="100%" stop-color="#C62828"/></linearGradient>
+    <linearGradient id="mBarO" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFCC80"/><stop offset="100%" stop-color="#E65100"/></linearGradient>
+    <linearGradient id="mBarY" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="100%" stop-color="#F9A825"/></linearGradient>
+    <linearGradient id="mBarG" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#B9F6CA"/><stop offset="100%" stop-color="#2E7D32"/></linearGradient>
+    <filter id="mDrop" x="-3" y="-3" width="70" height="80">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="100" height="100" rx="22" fill="url(#mBg)"/>
+  <rect width="100" height="100" rx="22" fill="url(#mGlow)"/>
+  <!-- Inner border highlight -->
+  <rect x="1.5" y="1.5" width="97" height="97" rx="20.5" fill="none" stroke="#5C6BC0" stroke-opacity="0.35" stroke-width="1"/>
+  <!-- Rays toward bars -->
+  <g opacity="0.4" fill="none" stroke-linecap="round">
+    <path d="M58 32 L80 20" stroke="#90CAF9" stroke-width="0.4"/>
+    <path d="M58 40 L80 32" stroke="#90CAF9" stroke-width="0.4"/>
+    <path d="M58 50 L80 50" stroke="#90CAF9" stroke-width="0.4"/>
+    <path d="M58 58 L80 66" stroke="#90CAF9" stroke-width="0.4"/>
+  </g>
+  <g transform="translate(4, 20)">
+    <circle cx="2" cy="6" r="2.2" fill="#5C6BC0" filter="url(#mDrop)"/>
+    <circle cx="2" cy="6" r="0.9" fill="#E1F5FE"/>
+    <circle cx="6" cy="0" r="1.2" fill="#A5D6A7" opacity="0.9"/>
+    <circle cx="0" cy="14" r="1.4" fill="#EF9A9A" opacity="0.9"/>
+    <circle cx="8" cy="10" r="1.1" fill="#FFCC80" opacity="0.95"/>
+  </g>
+  <g filter="url(#mDrop)">
+    <g transform="translate(18, 22)" stroke="#283593" stroke-width="0.6" stroke-linejoin="round">
+      <path d="M4 1 L32 0 L32 60 L4 60 Z" fill="url(#mPrismF)"/>
+      <path d="M32 0 L48 2 L48 58 L32 60 Z" fill="url(#mPrismS)"/>
+      <path d="M4 1 L20 0.5 L48 2" fill="url(#mPrismT)"/>
+    </g>
+    <g transform="translate(18, 22)">
+      <line x1="8" y1="5" x2="30" y2="2.5" stroke="#FFFFFF" stroke-width="0.4" stroke-linecap="round" opacity="0.85"/>
+    </g>
+  </g>
+  <g transform="translate(66, 24)">
+    <rect x="0" y="0" width="28" height="6" rx="2" fill="url(#mBarR)"/>
+    <rect x="0" y="0" width="28" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.3"/>
+    <rect x="0" y="9" width="28" height="6" rx="2" fill="url(#mBarO)"/>
+    <rect x="0" y="9" width="28" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.25"/>
+    <rect x="0" y="18" width="28" height="6" rx="2" fill="url(#mBarY)"/>
+    <rect x="0" y="18" width="28" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.25"/>
+    <rect x="0" y="27" width="28" height="6" rx="2" fill="url(#mBarG)"/>
+    <rect x="0" y="27" width="28" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.3"/>
+  </g>
+  <g>
+    <path d="M62 50 H66" stroke="#C5CAE9" stroke-width="1.2" stroke-linecap="round" opacity="0.9"/>
+    <path d="M64.5 48 L70 50 L64.5 52 Z" fill="#E8EAF6"/>
+  </g>
+</svg>
