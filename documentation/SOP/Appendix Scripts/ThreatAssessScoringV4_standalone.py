@@ -1599,8 +1599,10 @@ def build_explanation(row):
         'stacked_context_bonus': float(row.get('stacked_context_bonus', 0) or 0),
     }
 
-    score = float(row.get('PRISM_Score', 0) or 0)
-    sev = str(row.get('Severity', 'nan'))
+    final = row.get('PRISM_Score_Final')
+    score = float(final) if pd.notna(final) else float(row.get('PRISM_Score', 0) or 0)
+    sev_final = row.get('Severity_Final')
+    sev = str(sev_final) if pd.notna(sev_final) else str(row.get('Severity', 'nan'))
     current_date = datetime.now(UTC).strftime('%Y-%m-%d')
 
     vt_note = (
@@ -1684,8 +1686,6 @@ def build_explanation(row):
         f"Score: {score:.0f}/1000."
     )
 
-df_scored['Explanation'] = df_scored.apply(build_explanation, axis=1)
-
 # -------------------------------------------------------------------
 # 2. AI Layer: Train a model to learn your scoring behavior
 # -------------------------------------------------------------------
@@ -1753,6 +1753,8 @@ df_scored['Severity_Final'] = pd.cut(
 )
 
 df_scored['AI_Adjustment'] = df_scored['PRISM_Score_Final'] - df_scored['PRISM_Score']
+
+df_scored['Explanation'] = df_scored.apply(build_explanation, axis=1)
 
 # -------------------------------------------------------------------
 # 4. Clean up, de-duplicate, and rename for export / reporting

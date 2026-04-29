@@ -1,0 +1,1326 @@
+﻿{
+  "groupXid" : "TaPFAxUS",
+  "name" : "SET SOAR Tagger",
+  "type" : "Playbook",
+  "panX" : 199.0,
+  "panY" : -62.0,
+  "zoom" : 0.6326,
+  "logLevel" : "WARN",
+  "description" : "This playbooks is intended to find all NIH SOAR indicators and set a 'SOAR' tag to identify them as such.",
+  "roiDollarsPerHour" : 75,
+  "roiMinutes" : 10,
+  "priority" : 6,
+  "version" : "1.16",
+  "comment" : "Auto-Saved on Wed Apr 15 15:33:18 UTC 2026",
+  "jobList" : [ {
+    "id" : 6755399463000042,
+    "appCatalogItem" : {
+      "id" : 779,
+      "programName" : "TCPB - Threatconnect Tags TI v2",
+      "displayName" : "ThreatConnect Tags",
+      "programVersion" : "2.0.7"
+    },
+    "name" : "Assign new Tag to SOAR Indicators",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "get_by"
+      },
+      "value" : "Threat Intel Entity"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "add_entities"
+      },
+      "value" : "#App:6755399463000057:single_ent!TCEntity"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "name"
+      },
+      "value" : "SOAR Indicator PB"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "Add"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "check_mitre_tag"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity_remove"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "apply_all"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "check_naics_tag"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tql"
+      }
+    } ],
+    "locationLeft" : 2080.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"tc_action\",\"add_entities\",\"name\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"add_entities\",\"apply_all\",\"name\",\"check_mitre_tag\",\"check_naics_tag\",\"fail_on_error\"]"
+  }, {
+    "id" : 6755399463000048,
+    "appCatalogItem" : {
+      "id" : 799,
+      "programName" : "TCPB - Threatconnect Attributes v2",
+      "displayName" : "ThreatConnect Attributes",
+      "programVersion" : "2.0.5"
+    },
+    "name" : "ThreatConnect Attributes Data Pull",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity"
+      },
+      "value" : "#App:6755399463000057:single_ent!TCEntity"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entities"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "delete_entities"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "add_type"
+      },
+      "value" : "Restrict by Attribute"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attribute_type"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attribute_type_value_mapping"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "filter_attribute_type"
+      },
+      "value" : ""
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "delete_id"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "operation"
+      },
+      "value" : "Delete all occurrences"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "delete_attribute_type"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "displayed"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "Get"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "apply_all"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attribute_sources"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attribute_values"
+      }
+    } ],
+    "locationLeft" : 980.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.attributes.value\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.attributes\",\"type\":\"TCEntityArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.attributes.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.attributes.source\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.attributes.id\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.attributes.default\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.attributes.type\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"entity\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"entity\",\"filter_attribute_type\",\"fail_on_no_results\"]"
+  }, {
+    "id" : 6755399463000052,
+    "appCatalogItem" : {
+      "id" : 41,
+      "programName" : "Logger",
+      "displayName" : "Logger",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "Get Indicators Debug Summary",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "logging"
+      },
+      "value" : "INFO"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "log_message"
+      },
+      "value" : "#App:6755399463000051:tc.indicators.entity!TCEntityArray"
+    } ],
+    "locationLeft" : 700.0,
+    "locationTop" : 550.0,
+    "outputVariables" : "[]"
+  }, {
+    "id" : 6755399463000057,
+    "appCatalogItem" : {
+      "id" : 450,
+      "programName" : "Iterator",
+      "displayName" : "Iterator",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "Iterator",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "array_outputs"
+      },
+      "value" : "[{\"key\":\"AttrResponseData\",\"value\":\"#App:6755399463000048:tc.response.json.raw!String\"}]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "array_inputs"
+      },
+      "value" : "[{\"key\":\"single_ent\",\"value\":\"#App:6755399463000051:tc.indicators.entity!TCEntityArray\"}]"
+    } ],
+    "locationLeft" : 890.0,
+    "locationTop" : 410.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"AttrResponseData\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"single_ent\",\"type\":\"TCEntity\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"array_inputs\"]",
+    "layoutDisplayedInputParams" : "[\"array_inputs\",\"array_outputs\"]"
+  }, {
+    "id" : 6755399463000059,
+    "appCatalogItem" : {
+      "id" : 649,
+      "programName" : "TCPB - Send Email v3",
+      "displayName" : "Send Email",
+      "programVersion" : "3.0.10"
+    },
+    "name" : "SET SOAR Tag Failed: GET Indicators Failed",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "send_one"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "sender"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "recipient"
+      },
+      "value" : "jaytlin.askew@hhs.gov"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_pw"
+      },
+      "value" : ""
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_connection_type"
+      },
+      "value" : "SMTPS (Implicit TLS)"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attachment_filenames"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "headers"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "subject"
+      },
+      "value" : "GET Indicators Failed"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_port"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "smtp_not_required"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "body"
+      },
+      "value" : "SET SOAR Tag Failed: GET Indicators Failed"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attachments"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "timeout"
+      },
+      "value" : "30"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_user_id"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "mime_types"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "cc_recipients"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "Send Email"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "html_enabled"
+      },
+      "value" : "false"
+    } ],
+    "locationLeft" : 700.0,
+    "locationTop" : 730.0,
+    "outputVariables" : "[]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.subject\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.count.fail\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.html_body\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.count.success\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.plaintext_body\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.recipient\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.msg.binary\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.response.error_message\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"tc_action\",\"recipient\",\"subject\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"recipient\",\"subject\",\"body\",\"html_enabled\",\"attachments\",\"attachment_filenames\",\"mime_types\",\"sender\",\"timeout\",\"email_server\",\"email_server_port\",\"email_server_user_id\",\"email_server_pw\",\"smtp_not_required\",\"email_connection_type\",\"headers\",\"send_one\",\"fail_on_error\"]"
+  }, {
+    "id" : 5629499560000059,
+    "appCatalogItem" : {
+      "id" : 19,
+      "programName" : "If / Else",
+      "displayName" : "If / Else",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "If / Else",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "as_numeric"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "match_case"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "operator"
+      },
+      "value" : "greater than"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "operand_1"
+      },
+      "value" : "#App:6755399463000051:tc.indicators.count!String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "operand_2"
+      },
+      "value" : "0"
+    } ],
+    "locationLeft" : 640.0,
+    "locationTop" : 260.0,
+    "outputVariables" : "[]"
+  }, {
+    "id" : 6755399463000044,
+    "appCatalogItem" : {
+      "id" : 41,
+      "programName" : "Logger",
+      "displayName" : "Logger",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "None SOAR Indicator Summary",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "logging"
+      },
+      "value" : "INFO"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "log_message"
+      },
+      "value" : "#App:6755399463000049:out!String"
+    } ],
+    "locationLeft" : 2640.0,
+    "locationTop" : 1170.0,
+    "outputVariables" : "[]"
+  }, {
+    "id" : 6755399463000047,
+    "appCatalogItem" : {
+      "id" : 616,
+      "programName" : "TCPB - JMESPath v3.0",
+      "displayName" : "JMESPath",
+      "programVersion" : "3.0.12"
+    },
+    "name" : "Tag JMESPath",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_jmes_expression"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_quotes"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_expressions"
+      },
+      "value" : "[{\"key\":\"Tags\",\"value\":\"@\"}]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_json"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_array_expressions"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "json_data"
+      },
+      "value" : "#App:6755399463000045:tc.tags.name!StringArray"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "path_output"
+      },
+      "value" : "false"
+    } ],
+    "locationLeft" : 2800.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"Tags\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"json_data\"]",
+    "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]"
+  }, {
+    "id" : 6755399463000050,
+    "appCatalogItem" : {
+      "id" : 649,
+      "programName" : "TCPB - Send Email v3",
+      "displayName" : "Send Email",
+      "programVersion" : "3.0.10"
+    },
+    "name" : "SET SOAR Tag Failed: Iterator Failed",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_connection_type"
+      },
+      "value" : "SMTPS (Implicit TLS)"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "headers"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "recipient"
+      },
+      "value" : "jaytlin.askew@hhs.gov"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_pw"
+      },
+      "value" : ""
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "subject"
+      },
+      "value" : "Iterator Failed"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "html_enabled"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_port"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "body"
+      },
+      "value" : "#App:6755399463000056:logger.content!String #App:6755399463000051:tc.response.error_message!String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "send_one"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "mime_types"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "sender"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attachment_filenames"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "smtp_not_required"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "timeout"
+      },
+      "value" : "30"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_user_id"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "Send Email"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "cc_recipients"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attachments"
+      }
+    } ],
+    "locationLeft" : 1380.0,
+    "locationTop" : 510.0,
+    "outputVariables" : "[]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.subject\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.count.fail\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.html_body\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.count.success\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.plaintext_body\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.recipient\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.msg.binary\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.response.error_message\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"tc_action\",\"recipient\",\"subject\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"recipient\",\"subject\",\"body\",\"html_enabled\",\"attachments\",\"attachment_filenames\",\"mime_types\",\"sender\",\"timeout\",\"email_server\",\"email_server_port\",\"email_server_user_id\",\"email_server_pw\",\"smtp_not_required\",\"email_connection_type\",\"headers\",\"send_one\",\"fail_on_error\"]"
+  }, {
+    "id" : 6755399463000053,
+    "appCatalogItem" : {
+      "id" : 779,
+      "programName" : "TCPB - Threatconnect Tags TI v2",
+      "displayName" : "ThreatConnect Tags",
+      "programVersion" : "2.0.7"
+    },
+    "name" : "Indicator's Current Tags",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "check_naics_tag"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity_remove"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "Get"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "add_entities"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "name"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity"
+      },
+      "value" : "#App:6755399463000057:single_ent!TCEntity"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "apply_all"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "check_mitre_tag"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "get_by"
+      },
+      "value" : "Threat Intel Entity"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tql"
+      }
+    } ],
+    "locationLeft" : 1260.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.name\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.name\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.owner\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.last_used\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.id\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.description\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"tc_action\",\"entity\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"get_by\",\"entity\",\"fail_on_no_results\"]"
+  }, {
+    "id" : 6755399463000055,
+    "appCatalogItem" : {
+      "id" : 19,
+      "programName" : "If / Else",
+      "displayName" : "If / Else",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "If 'SOAR' Tag, Else, Skip Tagging",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "operator"
+      },
+      "value" : "equals"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "match_case"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "operand_2"
+      },
+      "value" : "SOAR"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "operand_1"
+      },
+      "value" : "#App:6755399463000049:out!String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "as_numeric"
+      },
+      "value" : "false"
+    } ],
+    "locationLeft" : 1830.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[]"
+  }, {
+    "id" : 6755399463000056,
+    "appCatalogItem" : {
+      "id" : 41,
+      "programName" : "Logger",
+      "displayName" : "Logger",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "Failed Process",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "log_message"
+      },
+      "value" : "Process Failed: #App:6755399463000057:AttrResponseData!StringArray"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "logging"
+      },
+      "value" : "INFO"
+    } ],
+    "locationLeft" : 1130.0,
+    "locationTop" : 510.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"logger.content\",\"type\":\"String\",\"encrypt\":false}]"
+  }, {
+    "id" : 6755399463000058,
+    "appCatalogItem" : {
+      "id" : 41,
+      "programName" : "Logger",
+      "displayName" : "Logger",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "Compare Pre/Post Process Tagging",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "logging"
+      },
+      "value" : "INFO"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "log_message"
+      },
+      "value" : "#App:6755399463000053:tc.tags.name!StringArray#App:6755399463000045:tc.tags.name!StringArray"
+    } ],
+    "locationLeft" : 3620.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[]"
+  }, {
+    "id" : 6755399463000046,
+    "appCatalogItem" : {
+      "id" : 601,
+      "programName" : "TCPB - DataStore v4",
+      "displayName" : "DataStore",
+      "programVersion" : "4.0.5"
+    },
+    "name" : "DataStore",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "output_type"
+      },
+      "value" : "String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_not_found"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "mapping"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "POST"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "rid_required"
+      },
+      "value" : "#App:6755399463000054:Indicator!String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "data_type"
+      },
+      "value" : "json"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "data_optional"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "data_required"
+      },
+      "value" : "{\"SOAR Identifier\": #App:6755399463000049:out!String, \"Tags\": #App:6755399463000047:Tags!String  }"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "domain"
+      },
+      "value" : "Local"
+    } ],
+    "locationLeft" : 3020.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.response.version\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.response.type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.id\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.response.shard.success\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.response.result\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.response.json\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.response.shard.failed\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"datastore.response.shard.total\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"tc_action\",\"domain\",\"data_type\",\"rid_required\",\"data_required\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"domain\",\"data_type\",\"rid_required\",\"data_required\"]"
+  }, {
+    "id" : 6755399463000049,
+    "appCatalogItem" : {
+      "id" : 616,
+      "programName" : "TCPB - JMESPath v3.0",
+      "displayName" : "JMESPath",
+      "programVersion" : "3.0.12"
+    },
+    "name" : "Pull Indicator's LastName Value",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "json_data"
+      },
+      "value" : "#App:6755399463000048:tc.response.json.raw!String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_quotes"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_array_expressions"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_expressions"
+      },
+      "value" : "[{\"key\":\"out\",\"value\":\"data[0].createdBy.lastName\"}]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "path_output"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_jmes_expression"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_json"
+      },
+      "value" : "true"
+    } ],
+    "locationLeft" : 1540.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"out\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmespath_paths\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"json_data\"]",
+    "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]"
+  }, {
+    "id" : 6755399463000128,
+    "appCatalogItem" : {
+      "id" : 649,
+      "programName" : "TCPB - Send Email v3",
+      "displayName" : "Send Email",
+      "programVersion" : "3.0.10"
+    },
+    "name" : "Failed SOAR Tagging",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "attachments"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_pw"
+      },
+      "value" : ""
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "recipient"
+      },
+      "value" : "jaytlin.askew@hhs.gov"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "html_enabled"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "timeout"
+      },
+      "value" : "30"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "Send Email"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "subject"
+      },
+      "value" : "Failed SOAR Tagging "
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "sender"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "body"
+      },
+      "value" : "Failed to tag an indicator with 'SOAR'. Check Set SOAR Tagger playbook."
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "send_one"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "mime_types"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "cc_recipients"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "smtp_not_required"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_port"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "attachment_filenames"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_connection_type"
+      },
+      "value" : "SMTPS (Implicit TLS)"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "email_server_user_id"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "headers"
+      },
+      "value" : "[]"
+    } ],
+    "locationLeft" : 2630.0,
+    "locationTop" : 1010.0,
+    "outputVariables" : "[]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.subject\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.count.fail\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.html_body\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.count.success\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.plaintext_body\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.recipient\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.msg.binary\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"email.response.error_message\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"tc_action\",\"recipient\",\"subject\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"recipient\",\"cc_recipients\",\"subject\",\"body\",\"html_enabled\",\"attachments\",\"attachment_filenames\",\"mime_types\",\"sender\",\"timeout\",\"email_server\",\"email_server_port\",\"email_server_user_id\",\"email_server_pw\",\"smtp_not_required\",\"email_connection_type\",\"headers\",\"send_one\"]"
+  }, {
+    "id" : 6755399463000043,
+    "appCatalogItem" : {
+      "id" : 41,
+      "programName" : "Logger",
+      "displayName" : "Logger",
+      "programVersion" : "1.0.0"
+    },
+    "name" : "Successful Process",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "logging"
+      },
+      "value" : "INFO"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "log_message"
+      },
+      "value" : "Process Sucessful: #App:6755399463000057:AttrResponseData!StringArray"
+    } ],
+    "locationLeft" : 1130.0,
+    "locationTop" : 300.0,
+    "outputVariables" : "[]"
+  }, {
+    "id" : 6755399463000045,
+    "appCatalogItem" : {
+      "id" : 779,
+      "programName" : "TCPB - Threatconnect Tags TI v2",
+      "displayName" : "ThreatConnect Tags",
+      "programVersion" : "2.0.7"
+    },
+    "name" : "Indicator's Post Action Tags",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "tql"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "check_mitre_tag"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity_remove"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "check_naics_tag"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "Get"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity"
+      },
+      "value" : "#App:6755399463000057:single_ent!TCEntity"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "apply_all"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "add_entities"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "get_by"
+      },
+      "value" : "Threat Intel Entity"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "name"
+      }
+    } ],
+    "locationLeft" : 2320.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.name\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.name\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.owner\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.last_used\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.id\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tags.description\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"tc_action\",\"entity\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"get_by\",\"entity\",\"fail_on_no_results\"]"
+  }, {
+    "id" : 6755399463000051,
+    "appCatalogItem" : {
+      "id" : 730,
+      "programName" : "TCPB - Threatconnect Get Indicators v1",
+      "displayName" : "ThreatConnect Get Indicators",
+      "programVersion" : "1.0.9"
+    },
+    "name" : "ThreatConnect Get Indicators",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_ids"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tql"
+      },
+      "value" : "typeName in (\"Address\") and dateAdded >= \"NOW() - 1 DAY\" and NOT hasTag(summary in (\"SOAR Indicator PB\")) and ownerName in (\"HTOC Org\")"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "summaries"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "owner"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "max_results"
+      },
+      "value" : "2000"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entities"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_type"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "summary"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "TQL"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_id"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tags"
+      }
+    } ],
+    "locationLeft" : 230.0,
+    "locationTop" : 410.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.entity\",\"type\":\"TCEntityArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.entity\",\"type\":\"TCEntityArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.observation\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.id\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.first_seen\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.date_added\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_observed\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_seen\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_modified\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.hosts.dns_active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_date_expires\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.rating\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_last_modified\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.files.size\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.false_positive\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_date_added\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value3\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_false_positive\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value2\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value1\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.summary\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.owner_name\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.web_link\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.hosts.whois_active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.type\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.threat_assess_score\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.active_locked\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.confidence\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"max_results\",\"tql\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"max_results\",\"tql\",\"fail_on_no_results\"]"
+  }, {
+    "id" : 6755399463000054,
+    "appCatalogItem" : {
+      "id" : 616,
+      "programName" : "TCPB - JMESPath v3.0",
+      "displayName" : "JMESPath",
+      "programVersion" : "3.0.12"
+    },
+    "name" : "JMESPath",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "path_output"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_expressions"
+      },
+      "value" : "[{\"key\":\"Indicator\",\"value\":\"[0].summary\"}]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_jmes_expression"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_json"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_array_expressions"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "json_data"
+      },
+      "value" : "#App:6755399463000042:tc.response.json.raw!String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_quotes"
+      },
+      "value" : "true"
+    } ],
+    "locationLeft" : 2570.0,
+    "locationTop" : 840.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"Indicator\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"json_data\"]",
+    "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]"
+  } ],
+  "playbookConnectionList" : [ {
+    "type" : "Fail",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 5629499560000059,
+    "targetJobId" : 6755399463000043
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000056,
+    "targetJobId" : 6755399463000050
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000054,
+    "targetJobId" : 6755399463000047
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000055,
+    "targetJobId" : 6755399463000042
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000044,
+    "targetJobId" : 6755399463000058
+  }, {
+    "type" : "Fail",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000055,
+    "targetJobId" : 6755399463000044
+  }, {
+    "type" : "Fail",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000042,
+    "targetJobId" : 6755399463000128
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 5629499560000059,
+    "targetJobId" : 6755399463000057
+  }, {
+    "type" : "Fail",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000057,
+    "targetJobId" : 6755399463000056
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000048,
+    "targetJobId" : 6755399463000053
+  }, {
+    "type" : "StartLoop",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000057,
+    "targetJobId" : 6755399463000048
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000049,
+    "targetJobId" : 6755399463000055
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000051,
+    "targetJobId" : 5629499560000059
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000057,
+    "targetJobId" : 6755399463000043
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "targetJobId" : 6755399463000051,
+    "sourceTriggerId" : 6755399460000011
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000042,
+    "targetJobId" : 6755399463000045
+  }, {
+    "type" : "EndLoop",
+    "isCircularOnTarget" : true,
+    "sourceJobId" : 6755399463000058,
+    "targetJobId" : 6755399463000057
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000128,
+    "targetJobId" : 6755399463000058
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000053,
+    "targetJobId" : 6755399463000049
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "targetJobId" : 6755399463000051,
+    "sourceTriggerId" : 6755399460000010
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000046,
+    "targetJobId" : 6755399463000058
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000045,
+    "targetJobId" : 6755399463000054
+  }, {
+    "type" : "Fail",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000051,
+    "targetJobId" : 6755399463000059
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000051,
+    "targetJobId" : 6755399463000052
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 6755399463000047,
+    "targetJobId" : 6755399463000046
+  } ],
+  "playbookTriggerList" : [ {
+    "id" : 6755399460000011,
+    "name" : "SOAR Trigger",
+    "type" : "HttpLink",
+    "eventType" : "External",
+    "locationLeft" : -100.0,
+    "locationTop" : 410.0,
+    "httpResponseCode" : "Tigger Actvated",
+    "httpResponseHeader" : "[]",
+    "httpResponseBody" : "#App:6755399463000043:logger.content!String Process Complete.",
+    "timeoutMinutes" : 5,
+    "scheduleType" : "Daily",
+    "anyOrg" : true,
+    "playbookTriggerFilterList" : [ ],
+    "outputVariables" : "[]",
+    "cacheMinutes" : 120,
+    "cacheParams" : "{\"includeMethod\":false,\"includeBody\":false,\"queryParams\":[],\"headerNames\":[]}",
+    "active" : false,
+    "organizationNames" : [ ]
+  }, {
+    "id" : 6755399460000010,
+    "name" : "Set SOAR Tag Timer 12 hours",
+    "type" : "Timer",
+    "eventType" : "External",
+    "locationLeft" : -100.0,
+    "locationTop" : 530.0,
+    "scheduleType" : "Advanced",
+    "scheduleCronFormat" : "0 0 6,18 * * ?",
+    "anyOrg" : true,
+    "playbookTriggerFilterList" : [ ],
+    "outputVariables" : "[]",
+    "organizationNames" : [ ]
+  } ],
+  "playbookLabels" : [ ],
+  "playbookScopeVariables" : [ ],
+  "exportablePipes" : [ ]
+}
