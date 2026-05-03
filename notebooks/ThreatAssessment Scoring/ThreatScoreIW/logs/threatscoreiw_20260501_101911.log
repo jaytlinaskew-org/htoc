@@ -1,0 +1,6 @@
+[Fri 05/01/2026 10:19:12.38] Starting ThreatScoreIW...
+[Fri 05/01/2026 10:19:13.08] Log file: "H:\HTOC\notebooks\ThreatAssessment Scoring\ThreatScoreIW\logs\threatscoreiw_20260501_101911.log"
+[Fri 05/01/2026 10:19:17.55] Installing required packages...
+[Fri 05/01/2026 10:19:18.73] Attempting install from wheelhouse
+[Fri 05/01/2026 10:19:18.73] WARNING: Wheelhouse failed, trying PyPI
+[Fri 05/01/2026 10:35:57.79] Attempting install from PyPI
