@@ -4,14 +4,16 @@
 | Field | Detail |
 |---|---|
 | **SOP Title** | I&W Batch Reporting Pipeline (Core + Expanded) |
-| **Primary Scripts** | GitHub: [`notebooks/I&W Reporting/Batch/I&W Spreadsheet/I&W_Spreadsheet.py`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Spreadsheet/I%26W_Spreadsheet.py)<br>GitHub: [`notebooks/I&W Reporting/Batch/I&W Generator/I&W_Generator.py`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Generator/I%26W_Generator.py)<br>GitHub: [`notebooks/I&W Reporting/Batch/I&W Expanded/I&W_Document_expanded_spreadsheet.py`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Expanded/I%26W_Document_expanded_spreadsheet.py)<br>GitHub: [`notebooks/I&W Reporting/Batch/I&W Expanded/I&W_Document_expanded_generator.py`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Expanded/I%26W_Document_expanded_generator.py) |
-| **Batch Launchers** | GitHub: [`notebooks/I&W Reporting/Batch/I&W Spreadsheet/run_iw_spreadsheet.bat`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Spreadsheet/run_iw_spreadsheet.bat)<br>GitHub: [`notebooks/I&W Reporting/Batch/I&W Generator/run_iw_generator.bat`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Generator/run_iw_generator.bat)<br>GitHub: [`notebooks/I&W Reporting/Batch/I&W Expanded/run_iw_expanded_spreadsheet.bat`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Expanded/run_iw_expanded_spreadsheet.bat)<br>GitHub: [`notebooks/I&W Reporting/Batch/I&W Expanded/run_iw_expanded_generator.bat`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/I%26W%20Reporting/Batch/I%26W%20Expanded/run_iw_expanded_generator.bat) |
+| **Primary scripts** | SharePoint **`Documents/HTOC Data Analytics/Python Scripts/`** — **`I&W Spreadsheet/I&W_Spreadsheet.py`** · **`I&W Generator/I&W_Generator.py`** · **`I&W Expanded/I&W_Document_expanded_spreadsheet.py`** · **`I&W Expanded/I&W_Document_expanded_generator.py`** |
+| **Batch launchers (typical staging host)** | `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\I&W Report Processing Scripts\Spreadsheet_scripts\run_iw_spreadsheet.bat` · `...\run_iw_generator.bat` · `...\Expanded Scripts\run_iw_expanded_spreadsheet.bat` · `...\Expanded Scripts\run_iw_expanded_generator.bat` |
 | **Owner** | HTOC Data Analytics |
 | **Last Reviewed** | April 2026 |
+| **SOP library** | **SharePoint** (site **`HTOCDataAnalyticsASA`**): **`Documents/HTOC Data Analytics/SOPs/`** *(published procedure `.md` files and **`Appendix Scripts/`** live here)* |
 | **Input** | ThreatConnect indicator data (`HTOC Org`), OpDiv observation CSVs in `Z:\HTOC\Data_Analytics\Data\OpDiv_Observations\htoc_opdiv_obs_d{YYYYMMDD}.csv`, and historical reported-indicator list in `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\Reported Indicators\indicators.csv` |
 | **Output** | Core spreadsheet in `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\Spreadsheet\I&W_indicators_full_{YYYYMMDD}.xlsx`; core reports in `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\Generated Reports\{YYYY-MM-DD}\`; expanded spreadsheet in `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\Spreadsheet\Expanded\expanded_indicators_{YYYYMMDD}.xlsx`; expanded reports in `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\Expanded Reports\{YYYY-MM-DD}\`; run logs in `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\logs\` |
-| **Current Schedule** | Run via Windows Task Scheduler on F.R.E.D (confirm exact trigger times in Task Scheduler before production updates) |
+| **Execution** | Run the four **`run_iw_*.bat`** launchers in order (**Section 12**). Each batch file installs prerequisites and invokes its **`.py`** script; alternatively run each **`.py`** with the **`PYTHON_EXE`** and working directory configured in those launchers. |
 | **Associated Batch Files** | `run_iw_spreadsheet.bat`, `run_iw_generator.bat`, `run_iw_expanded_spreadsheet.bat`, `run_iw_expanded_generator.bat` |
+| **SharePoint script library** | Site **`HTOCDataAnalyticsASA`** — **`Documents/HTOC Data Analytics/Python Scripts/`**. This pipeline’s production folders are **`I&W Spreadsheet/`**, **`I&W Generator/`**, and **`I&W Expanded/`** under that library. **`ThreatScoreIW.py`** is also maintained at the library root when I&W scoring jobs use it—coordinate with ops for how it fits this workflow. **SharePoint SOP folder:** **`Documents/HTOC Data Analytics/SOPs/`**. |
 
 ---
 
@@ -37,7 +39,7 @@ This procedure is for operators maintaining daily I&W data production. It covers
 | ThreatConnect SDK path | `Z:\HTOC\Data_Analytics\threatconnect` must be accessible |
 | ThreatConnect config file | `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\I&W Report Processing Scripts\utils\config.json` |
 | Access to I&W staging paths on `Z:` | Required for spreadsheet/report/log read-write operations |
-| Task Scheduler access on F.R.E.D | Needed to verify and rerun scheduled tasks |
+| Access to staging share + launchers | Operators need permissions to run each **`.bat`** (or **`.py`**) from **`Z:\`** staging paths |
 
 Example dependency install command:
 ```powershell
@@ -57,11 +59,11 @@ pip install pandas openpyxl requests python-docx urllib3 pytz
 
 | Component | Path | Role |
 |---|---|---|
-| Core spreadsheet builder | `notebooks/I&W Reporting/Batch/I&W Spreadsheet/I&W_Spreadsheet.py` | Pulls candidate indicators and writes full spreadsheet for report generation |
-| Core report generator | `notebooks/I&W Reporting/Batch/I&W Generator/I&W_Generator.py` | Reads latest core spreadsheet, enriches indicators, creates Word reports |
-| Expanded spreadsheet builder | `notebooks/I&W Reporting/Batch/I&W Expanded/I&W_Document_expanded_spreadsheet.py` | Builds expanded indicator spreadsheet and filters already-reported items |
-| Expanded report generator | `notebooks/I&W Reporting/Batch/I&W Expanded/I&W_Document_expanded_generator.py` | Reads latest expanded spreadsheet, enriches, creates expanded report set, updates indicators list |
-| Batch launchers | `run_iw_*.bat` files listed in header table | Install dependencies, run scripts, and write log output |
+| Core spreadsheet builder | **`Documents/HTOC Data Analytics/Python Scripts/I&W Spreadsheet/I&W_Spreadsheet.py`** | Pulls candidate indicators and writes full spreadsheet for report generation |
+| Core report generator | **`Documents/HTOC Data Analytics/Python Scripts/I&W Generator/I&W_Generator.py`** | Reads latest core spreadsheet, enriches indicators, creates Word reports |
+| Expanded spreadsheet builder | **`Documents/HTOC Data Analytics/Python Scripts/I&W Expanded/I&W_Document_expanded_spreadsheet.py`** | Builds expanded indicator spreadsheet and filters already-reported items |
+| Expanded report generator | **`Documents/HTOC Data Analytics/Python Scripts/I&W Expanded/I&W_Document_expanded_generator.py`** | Reads latest expanded spreadsheet, enriches, creates expanded report set, updates indicators list |
+| Batch launchers | **`run_iw_*.bat`** paths in header table (staging host) | Install dependencies, run scripts, and write log output |
 
 ---
 
@@ -147,7 +149,7 @@ The hardened launchers (`run_iw_spreadsheet.bat` and `run_iw_expanded_spreadshee
 
 A successful full-cycle run should satisfy all checks:
 
-1. Each batch launcher exits cleanly (Task Scheduler result `0x0` when scheduled).
+1. Each batch launcher exits with code **0**.
 2. Core spreadsheet exists for current date in `Spreadsheet\`.
 3. Core report folder for current date exists in `Generated Reports\`.
 4. Expanded spreadsheet exists for current date in `Spreadsheet\Expanded\`.
@@ -178,9 +180,9 @@ A successful full-cycle run should satisfy all checks:
 
 ---
 
-## 12. How to Run Manually
+## 12. How to run
 
-From Task Scheduler host (or equivalent execution host), run each launcher in order:
+From a host that can reach **`Z:\`** and the configured Python runtime, run each launcher in order:
 
 ```powershell
 cmd /c "Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\I&W Report Processing Scripts\Spreadsheet_scripts\run_iw_spreadsheet.bat"
@@ -197,8 +199,9 @@ After each step, confirm:
 
 ---
 
-## 13. Related Documents
+## 13. Related documents
+
+Procedure Markdown files live in **SharePoint** under **`Documents/HTOC Data Analytics/SOPs/`**.
 
 - `SOP_Next_Obs_Daily_Batch.md`
 - `SOP_Daily_Reports_Consolidation.md`
-- GitHub repository: [jaytlinaskew-OIS/HTOC](https://github.com/jaytlinaskew-OIS/HTOC)

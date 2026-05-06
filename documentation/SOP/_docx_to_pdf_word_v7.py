@@ -1,8 +1,9 @@
 from pathlib import Path
 import win32com.client
 
-src_dir = Path(r"H:\HTOC\documentation\SOP\DOCX_v7")
-out_dir = Path(r"H:\HTOC\documentation\SOP\PDF")
+_here = Path(__file__).resolve().parent
+src_dir = _here / "DOCX_v7"
+out_dir = _here / "PDF"
 out_dir.mkdir(parents=True, exist_ok=True)
 
 docs = sorted(src_dir.glob("*.docx"))

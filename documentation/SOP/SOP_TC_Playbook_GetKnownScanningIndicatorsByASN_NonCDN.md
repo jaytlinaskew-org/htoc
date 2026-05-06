@@ -14,6 +14,8 @@
 | **Output** | `Known Scanner PB` tag assignments, Local DataStore records, playbook logs, and failure notification emails |
 | **Current Schedule** | Executed every 12 hours at **6:00 AM** and **6:00 PM** via Timer trigger (`0 0 6,18 * * ?`) |
 | **Associated Batch Files** | None (ThreatConnect-native playbook process) |
+| **SOP location** | **SharePoint** (site **`HTOCDataAnalyticsASA`**): **`Documents/HTOC Data Analytics/SOPs/`** *(published ThreatConnect playbook SOP Markdown files (`SOP_TC_Playbook_*.md`) live here alongside other procedures)* |
+
 ---
 
 ## 1. Purpose
@@ -282,7 +284,9 @@ Both playbooks share the same structure, run on the same 12-hour schedule, and w
 
 ---
 
-## 13. Related Documents
+## 13. Related documents
+
+Playbook companion SOPs live in **SharePoint** under **`Documents/HTOC Data Analytics/SOPs/`**.
 
 - `SOP_TC_Playbook_GetCDNScanningIndicatorsByASN.md` — CDN counterpart playbook SOP
 - ThreatConnect Playbook documentation: [ThreatConnect Playbook Apps](https://docs.threatconnect.com)

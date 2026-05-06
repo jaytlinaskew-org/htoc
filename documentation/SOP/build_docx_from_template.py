@@ -1,3 +1,9 @@
+"""
+Build DOCX from Markdown under the SOP folder. Published SOP Markdown lives on SharePoint
+(site HTOCDataAnalyticsASA) at Documents/HTOC Data Analytics/SOPs/ — keep this script beside
+the synced .md sources (or set paths below).
+"""
+import os
 import re
 from pathlib import Path
 from docx import Document
@@ -5,8 +11,11 @@ from docx.shared import Pt, RGBColor
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
-TEMPLATE = Path(r"H:\SOP_Format_Example.docx")
-SOP_DIR = Path(r"H:\HTOC\documentation\SOP")
+SOP_DIR = Path(__file__).resolve().parent
+# Override with absolute path via SOP_DOCX_TEMPLATE when the template is not beside this script.
+TEMPLATE = Path(
+    os.environ.get("SOP_DOCX_TEMPLATE", str(SOP_DIR / "SOP_Format_Example.docx"))
+)
 OUT_DIR = SOP_DIR / "DOCX_v11"
 OUT_DIR.mkdir(exist_ok=True)
 

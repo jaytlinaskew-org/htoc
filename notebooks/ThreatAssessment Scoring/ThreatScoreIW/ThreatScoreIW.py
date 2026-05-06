@@ -486,7 +486,7 @@ logger.info("Multi-partner (2+ OpDiv) rows: %s", len(last_24h_multiple_partners)
 # %% [code cell 5]
 vt_scores = last_24h_multiple_partners["Explanation"].str.extract(r"VT score:\s*(\d+)", expand=False)
 vt_scores = pd.to_numeric(vt_scores, errors="coerce")
-last_24h_multi_partners_vt15 = last_24h_multiple_partners[vt_scores >= 14]
+last_24h_multi_partners_vt15 = last_24h_multiple_partners[vt_scores >= 2]
 logger.info("VT>=14 filter: %s rows.", len(last_24h_multi_partners_vt15))
 
 # %% [code cell 6]

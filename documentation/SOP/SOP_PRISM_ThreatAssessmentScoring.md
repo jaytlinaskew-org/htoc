@@ -1,29 +1,29 @@
 # Standard Operating Procedure
-## PRISM Threat Assessment Scoring — ThreatAssessScoringV4
+## PRISM Threat Assessment Scoring
 
 | Field | Detail |
 |---|---|
 | **SOP Title** | PRISM Threat Assessment Scoring |
-| **Notebook** | GitHub: [`notebooks/ThreatAssessment Scoring/ThreatAssessScoringV4.ipynb`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/ThreatAssessment%20Scoring/ThreatAssessScoringV4.ipynb) |
-| **Version** | 4 |
+| **Script** | SharePoint: **`Documents/HTOC Data Analytics/Python Scripts/ThreatAssessScoringV4.py`** (site **`HTOCDataAnalyticsASA`**) · optional **SharePoint SOP appendix:** **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/ThreatAssessScoringV4.py`** |
+| **Version** | 4.0 |
 | **Owner** | HTOC Data Analytics |
 | **Last Reviewed** | April 2026 |
-| **Input** | `H:\HTOC\notebooks\ThreatAssessment Scoring\ThreatAssessScoringV4.ipynb` (PRISM threat scoring process using ThreatConnect API + local CSV feeds on `Z:\HTOC\Data_Analytics\Data`) |
-| **Output** | Excel workbook `Z:\HTOC\Data_Analytics\Data\Threat Assessment Scores\Prioritized_Risk_Indicator_Severity_Model_Scores.xlsx` |
-| **Current Schedule** | On demand (manual notebook execution) |
-| **Associated Batch Files** | None documented |
+| **SOP library** | **SharePoint** (site **`HTOCDataAnalyticsASA`**): **`Documents/HTOC Data Analytics/SOPs/`** *(this procedure `.md` and **`Appendix Scripts/`** live here after you relocate them)* |
+| **Input** | ThreatConnect API + local CSV feeds on `Z:\HTOC\Data_Analytics\Data` (observed tags, observed indicators, OpDiv observations) |
+| **Output** | Excel workbook `Z:\HTOC\Data_Analytics\Data\Threat Assessment Scores\Threat_Assessment_Scores.xlsx` |
+| **Execution** | On demand — run **`ThreatAssessScoringV4.py`** with **`py`** after syncing from SharePoint (see **Section 10**). No **`.bat`** is documented for this pipeline. |
 
 ---
 
 ## 1. Purpose
 
-This SOP describes how to operate the PRISM (Prioritized Risk Indicator Severity Model) pipeline. The notebook connects to ThreatConnect, enriches threat indicators with local and third-party data, computes a rule-based risk score blended with a machine learning layer, and exports prioritized results to Excel for analyst consumption.
+This SOP describes how to operate the PRISM (Prioritized Risk Indicator Severity Model) pipeline. The script connects to ThreatConnect, enriches threat indicators with local and third-party data, computes a rule-based risk score blended with a machine learning layer, and exports prioritized results to Excel for analyst consumption.
 
 ---
 
 ## 2. Scope
 
-This procedure applies to HTOC analysts and data engineers who run, maintain, or interpret threat indicator scoring outputs. It covers end-to-end execution of `ThreatAssessScoringV4.ipynb`, from environment setup through Excel output review.
+This procedure applies to HTOC analysts and data engineers who run, maintain, or interpret threat indicator scoring outputs. It covers end-to-end execution of the PRISM **Python script**, from environment setup through Excel output review.
 
 ---
 
@@ -34,10 +34,9 @@ This procedure applies to HTOC analysts and data engineers who run, maintain, or
 | Requirement | Notes |
 |---|---|
 | Python 3.13 | Verified against `cp313` wheel artifacts |
-| Jupyter (VS Code or JupyterLab) | Notebook must be run interactively |
-| scikit-learn | Installed automatically by first cell (`pip install scikit-learn`) |
+| scikit-learn | Install if missing (`pip install scikit-learn`) |
 | numpy, pandas, openpyxl | Required; typically already installed |
-| Network access to ThreatConnect API | SSL verification is disabled in the notebook |
+| Network access to ThreatConnect API | SSL verification is disabled in the client code |
 | Access to `Z:\HTOC\Data_Analytics\` | All input CSVs and Excel output live here |
 | ThreatConnect SDK | Located at `Z:\HTOC\Data_Analytics\threatconnect` |
 
@@ -72,7 +71,7 @@ Ensure daily OpDiv files cover at least the last 30 days (60 days recommended fo
 
 ## 4. Key Configuration Parameters
 
-These variables are defined near the top of the notebook and control pipeline behavior. Verify or adjust them before each run.
+These variables are defined near the top of the source and control pipeline behavior. Verify or adjust them before each run.
 
 | Parameter | Default | Description |
 |---|---|---|
@@ -89,7 +88,7 @@ These variables are defined near the top of the notebook and control pipeline be
 
 ## 5. Pipeline Overview
 
-The notebook executes in the following logical stages. Run cells in order from top to bottom unless troubleshooting a specific section.
+The pipeline executes in the following logical stages as a single Python run unless you temporarily split execution for debugging.
 
 ```
 [1] Install / Import Dependencies
@@ -119,7 +118,7 @@ The notebook executes in the following logical stages. Run cells in order from t
 
 ### Step 1 — Install and Import Dependencies
 
-Run the first cell. The `pip install scikit-learn` line installs scikit-learn and dependencies (scipy, joblib, threadpoolctl) if not already present. Subsequent import cells bring in pandas, numpy, openpyxl, and the ThreatConnect SDK.
+Ensure dependencies are installed (`pip install scikit-learn` installs scikit-learn and dependencies such as scipy, joblib, threadpoolctl if needed). The script then imports pandas, numpy, openpyxl, and the ThreatConnect SDK path.
 
 **Verify:** No import errors. The ThreatConnect SDK path (`Z:\HTOC\Data_Analytics\threatconnect`) must be accessible.
 
@@ -127,7 +126,7 @@ Run the first cell. The `pip install scikit-learn` line installs scikit-learn an
 
 ### Step 2 — ThreatConnect Indicator Pull
 
-The notebook queries ThreatConnect using TQL across multiple owners and indicator types for indicators observed within `QUERY_LOOKBACK_DAYS`. Results are paginated at `RESULT_PAGE_SIZE` per page. After retrieval, only indicators where `ownerName == 'HTOC Org'` are retained.
+The script queries ThreatConnect using TQL across multiple owners and indicator types for indicators observed within `QUERY_LOOKBACK_DAYS`. Results are paginated at `RESULT_PAGE_SIZE` per page. After retrieval, only indicators where `ownerName == 'HTOC Org'` are retained.
 
 Fields retrieved include: `summary`, `type`, `rating`, `confidence`, `threatAssessScore`, `calScore`, `lastObserved`, `firstSeen`, `falsePositives`, `tags`, `associatedGroups`, and `description`.
 
@@ -167,7 +166,7 @@ Results are stored as `partners` (list) and `partner_count` (integer).
 
 ### Step 7 — API Enrichment (VirusTotal and Shodan)
 
-The notebook sends parallel POST requests to `/v3/indicators/{id|value}/enrich` for eligible indicator types. Enrichment results are flattened into `enrich_*` columns. Key enrichment fields include:
+The script sends parallel POST requests to `/v3/indicators/{id|value}/enrich` for eligible indicator types. Enrichment results are flattened into `enrich_*` columns. Key enrichment fields include:
 
 - `enrich_vtMaliciousCount` — VirusTotal malicious detection count
 - `enrich_tags` — enrichment-derived tags (used for TOR detection)
@@ -280,7 +279,7 @@ Results are written to:
 
 ```
 Z:\HTOC\Data_Analytics\Data\Threat Assessment Scores\
-    Prioritized_Risk_Indicator_Severity_Model_Scores.xlsx
+    Threat_Assessment_Scores.xlsx
 ```
 
 The workbook contains three sheets:
@@ -304,7 +303,7 @@ Two helper functions are available for post-run analysis:
 | `get_indicator_score_history(indicator)` | Returns all historical scores for a specific indicator value |
 | `get_score_changes_since(days_ago=7)` | Returns indicators whose scores have changed in the last N days |
 
-Run these in a new cell at the bottom of the notebook as needed.
+Run these interactively from a Python REPL after a successful scoring run when ad hoc queries are needed.
 
 ---
 
@@ -327,54 +326,50 @@ Review the `AI_Adjustment` column to identify indicators where the AI layer sign
 |---|---|---|
 | Zero indicators returned | API credentials expired or TQL window too narrow | Check `config.json`; increase `QUERY_LOOKBACK_DAYS` |
 | `KeyError` on CSV load | Missing or renamed input file | Verify all input files exist at expected paths |
-| `enrich_domains` column missing on `exploded` | Expected; enrichment not available for that indicator type | Non-blocking; domain count cell handles gracefully |
+| `enrich_domains` column missing on `exploded` | Expected; enrichment not available for that indicator type | Non-blocking; domain count logic handles gracefully |
 | R² < 0.85 on AI layer | Very small dataset or unusual score distribution | Inspect `PRISM_Score` distribution; may need manual review |
-| `VirusTotal Malicious Score` missing from Excel export | Column rename mismatch between scoring and export cells | Verify column naming in export `columns_to_save` list |
+| `VirusTotal Malicious Score` missing from Excel export | Column rename mismatch between scoring and export steps | Verify column naming in export `columns_to_save` list |
 | OpDiv files not found | Daily files not yet generated for target dates | Confirm OpDiv feed is current; reduce `OPDIV_LOOKBACK_DAYS` if needed |
-| SSL errors on ThreatConnect | Network/proxy changes | SSL verify is disabled in the notebook; contact network admin if errors persist |
+| SSL errors on ThreatConnect | Network/proxy changes | SSL verify is disabled in code; contact network admin if errors persist |
 
 ---
 
 ## 9. Maintenance Notes
 
-- **Version history:** This is Version 4 of the scoring notebook. Previous versions are archived in the same folder.
-- **Weight tuning:** All scoring weights are defined in the `Weights` dictionary near the top of the scoring cell. Adjustments require analyst-level review and should be documented with a rationale comment in the notebook.
+- **Version history:** This is Version 4 of the scoring implementation. Older revisions may exist in historical archives for audit.
+- **Weight tuning:** All scoring weights are defined in the `Weights` dictionary near the scoring implementation. Adjustments require analyst-level review and should be documented in change records.
 - **Model retraining:** The AI layer is retrained on each run against the current rule scores. No persistent model file is saved. This is by design — the model adapts to the current indicator population.
 - **Score caps/floors:** VT-based caps (≤ 3 → Low cap; ≥ 13 → Medium floor) are intentional policy decisions. Changes require HTOC leadership approval.
 - **Botnet penalty:** The × 0.40 botnet multiplier applies only to `BOTNET_ACTIONS`-matched tags, not all botnet tags. SQL Injection and Cross-Site Scripting are in the tag list but excluded from `BOTNET_ACTIONS`.
 
 ---
 
-## 10. How to Run the Notebook
+## 10. How to Run
 
-### 10.1 Open the Notebook
+### 10.1 Run the Python script
 
-1. Open **Cursor** (or VS Code / JupyterLab).
-2. Navigate to `H:\HTOC\notebooks\ThreatAssessment Scoring\`.
-3. Open `ThreatAssessScoringV4.ipynb`.
+```powershell
+REM Production (sync from SharePoint first; example local path — adjust drive/folder):
+py "<local-sync>\Documents\HTOC Data Analytics\Python Scripts\ThreatAssessScoringV4.py"
+```
 
-### 10.2 Verify Prerequisites
+Optional **SharePoint SOP appendix:** **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/ThreatAssessScoringV4.py`**. After syncing locally, **`cd`** into **`...\Documents\HTOC Data Analytics\SOPs\Appendix Scripts`**, then:
 
-Before executing any cells, confirm the following:
+```powershell
+py .\ThreatAssessScoringV4.py
+```
 
-- [ ] You have network connectivity to the ThreatConnect API.
+### 10.2 Verify prerequisites
+
+- [ ] Network connectivity to the ThreatConnect API.
 - [ ] `Z:\HTOC\Data_Analytics\` is accessible and mapped.
 - [ ] `config.json` at `...\ThreatConnect-api-pull\utils\config.json` exists and contains current credentials.
 - [ ] Daily OpDiv CSV files in `Z:\HTOC\Data_Analytics\Data\OpDiv_Observations\` are current (at minimum, files for the past 30 days must be present).
-- [ ] The observed tags and observed indicators CSVs have been refreshed for today's run.
+- [ ] The observed tags and observed indicators CSVs have been refreshed for the run.
 
-### 10.3 Run All Cells
+### 10.3 Monitor progress
 
-Use **Run All** to execute the notebook from top to bottom:
-
-- **Cursor / VS Code:** Click the `▶▶ Run All` button in the notebook toolbar, or open the Command Palette (`Ctrl+Shift+P`) and select **Notebook: Run All Cells**.
-- **JupyterLab:** `Kernel` → `Restart Kernel and Run All Cells…` → confirm restart.
-
-> **Important:** Always run cells in sequential order. Running individual cells out of order will produce incorrect results because each stage depends on the dataframe state built by the previous stage.
-
-### 10.4 Monitor Progress
-
-The notebook prints status output after each major stage. Watch for:
+The script prints status output after each major stage. Watch for:
 
 | Stage | Expected Output |
 |---|---|
@@ -384,26 +379,26 @@ The notebook prints status output after each major stage. Watch for:
 | AI layer | Printed **MAE** and **R²** values (R² should be > 0.90) |
 | Excel export | A confirmation message with the output file path |
 
-If a cell raises an exception, do not continue running subsequent cells. Refer to the **Troubleshooting** section (Section 8) to resolve the issue before restarting.
+If execution raises an exception, stop, fix the issue, and start a **new** process. Refer to **Section 8 (Troubleshooting)**.
 
-### 10.5 Review Output
+### 10.4 Review output
 
 Once execution completes:
 
 1. Open the Excel file at:
    ```
    Z:\HTOC\Data_Analytics\Data\Threat Assessment Scores\
-       Prioritized_Risk_Indicator_Severity_Model_Scores.xlsx
+       Threat_Assessment_Scores.xlsx
    ```
 2. Review the **PRISM Scores** sheet for today's run. Rows are color-coded by severity.
 3. Use the **Score Comparison** sheet to compare PRISM scores against ThreatConnect native scores.
-4. Optionally run the helper functions in a new cell at the bottom of the notebook to query score history:
+4. Optionally run the helper functions in a Python REPL to query score history:
    ```python
    get_indicator_score_history("203.0.113.45")   # example IP
    get_score_changes_since(days_ago=7)
    ```
 
-### 10.6 Typical Run Time
+### 10.5 Typical run time
 
 | Phase | Approximate Duration |
 |---|---|
@@ -414,29 +409,29 @@ Once execution completes:
 | Excel export | < 30 seconds |
 | **Total (after first run)** | **~10–30 minutes** |
 
-### 10.7 Scheduling Considerations
+### 10.6 Runtime access
 
-This notebook is intended to be run **manually** on an as-needed or recurring basis (e.g., daily or weekly). If automation is desired, export the notebook to a `.py` script and schedule it via Windows Task Scheduler or a workflow tool. Ensure the scheduled account has access to both the network drive (`Z:\`) and the ThreatConnect API.
+The Windows account you use for **`py ThreatAssessScoringV4.py`** must be able to reach **`Z:\`** (mapped share) and the ThreatConnect API using the credentials in **`config.json`**.
 
 ---
 
-## 11. Appendix - Standalone Python Script
+## 11. Appendix — optional standalone copy
 
-The complete standalone script extracted from the notebook is attached at:
+**Production script (Python library):** **`Documents/HTOC Data Analytics/Python Scripts/ThreatAssessScoringV4.py`** on site **`HTOCDataAnalyticsASA`**.
 
-`H:\HTOC\documentation\SOP\Appendix Scripts\ThreatAssessScoringV4_standalone.py`
-
-Run with:
+**SharePoint SOP appendix (parity checks):** **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/ThreatAssessScoringV4.py`** — **`cd`** to that folder locally, then:
 
 ```powershell
-&"C:\Program Files\Python313\python.exe" "H:\HTOC\documentation\SOP\Appendix Scripts\ThreatAssessScoringV4_standalone.py"
+py .\ThreatAssessScoringV4.py
 ```
 
 ---
 
-## 12. Related Documents
+## 12. Related documents
+
+Procedure Markdown files live in **SharePoint** under **`Documents/HTOC Data Analytics/SOPs/`**.
 
 - ThreatConnect API documentation
 - HTOC OpDiv Observation Feed runbook
 - `Z:\HTOC\Data_Analytics\Data\Threat Assessment Scores\` (output location)
-- Previous notebook versions: `ThreatAssessScoringV1.ipynb` through `ThreatAssessScoringV3.ipynb`
+- Earlier major versions may exist in historical archives for audit only.

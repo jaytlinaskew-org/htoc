@@ -1,80 +1,45 @@
-# I&W Spreadsheet Batch Processing Script
+# I&W Spreadsheet batch processing
 
-This directory contains a silent batch script to automate the execution of the I&W Spreadsheet notebook process.
+This folder automates execution of **`I&W_Spreadsheet.py`** (scheduled runs use the enterprise launcher **`run_iw_spreadsheet.bat`**).
 
-## Available Script
+## Primary files
 
-### `run_iw_spreadsheet_silent.bat`
-**Silent execution for automation**
-- Runs the notebook without user interaction
-- Suitable for scheduled tasks and automation
-- Logs all output to timestamped log files
-- Returns appropriate exit codes for automation
-- Perfect for Task Scheduler integration
+| File | Role |
+|---|---|
+| [`I&W_Spreadsheet.py`](./I&W_Spreadsheet.py) | Core pipeline: ThreatConnect queries, spreadsheet build |
+| [`run_iw_spreadsheet.bat`](./run_iw_spreadsheet.bat) | Task Scheduler-friendly launcher (Python path, deps, logging) |
 
 **Usage:**
+
 ```cmd
-run_iw_spreadsheet_silent.bat
+run_iw_spreadsheet.bat
 ```
 
 ## Prerequisites
 
-1. **Jupyter Notebook** must be installed and accessible via command line
-2. **Python environment** with all required packages (pandas, openpyxl, etc.)
-3. **Network access** to ThreatConnect API and data sources
-4. **File permissions** to read from source directories and write to output directories
+1. **Python** executable configured in `run_iw_spreadsheet.bat` (see `PYTHON_EXE` in that file).
+2. **Packages** installed as required by the script (launcher runs `pip install` before the script).
+3. **Network access** to ThreatConnect and data shares.
+4. **Permissions** on `Z:\HTOC\` staging paths used by `I&W_Spreadsheet.py`.
 
-## File Paths
+## Paths
 
-- **Notebook:** `C:\Users\jaskew\Documents\project_repository\notebooks\I&W Reporting\I&W_Spreadsheet.ipynb`
-- **Output:** `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\Spreadsheet`
-- **Logs:** `C:\Users\jaskew\Documents\project_repository\notebooks\I&W Reporting\Batch\I&W Spreadsheet`
+- **Script (staging, typical):** `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\I&W Report Processing Scripts\Spreadsheet_scripts\I&W_Spreadsheet.py`
+- **Output (typical):** `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\Spreadsheet\`
+- **Logs (typical):** `Z:\HTOC\HTOC Reports\I&W Reports\5. I&W Staging\logs\`
 
-## Scheduling with Task Scheduler
+Repo-relative copy for development: this directory’s `I&W_Spreadsheet.py`.
 
-To run these scripts automatically, use Windows Task Scheduler:
+## Task Scheduler
 
-1. Open Task Scheduler
-2. Create Basic Task
-3. Set trigger (daily, weekly, etc.)
-4. Set action to start the silent batch script:
-   ```
-   Program: C:\Users\jaskew\Documents\project_repository\notebooks\I&W Reporting\Batch\I&W Spreadsheet\run_iw_spreadsheet_silent.bat
-   ```
+Point the scheduled action at **`run_iw_spreadsheet.bat`** on the execution host, or run the same `python.exe` + `I&W_Spreadsheet.py` invocation the batch file uses after matching `PYTHON_EXE` and working directory.
 
 ## Troubleshooting
 
-### Common Issues:
+| Symptom | What to check |
+|---|---|
+| Python or script path errors in log | `PYTHON_EXE` and `SCRIPT_PATH` inside `run_iw_spreadsheet.bat` |
+| `pip` / package failures | Network, proxy, and writable user package location |
+| ThreatConnect / file errors | `config.json`, VPN, and `Z:\HTOC\` ACLs |
 
-1. **"Jupyter is not recognized"**
-   - Ensure Jupyter is installed: `pip install jupyter`
-   - Add Python/Scripts to PATH environment variable
-
-2. **"Access denied" errors**
-   - Verify file permissions for source and destination directories
-   - Run as administrator if necessary
-
-3. **Network connectivity issues**
-   - Check VPN connection if required
-   - Verify API credentials and endpoints
-
-### Log Files
-
-All scripts generate detailed log files with timestamps. Check these files for:
-- Execution start/end times
-- Error messages and stack traces
-- File paths and operations
-- Success/failure status
-
-## Exit Codes
-
-- `0`: Success
-- `1`: General error
-- `>1`: Specific error codes from Jupyter execution
-
-## Notes
-
-- The advanced script creates automatic backups of the notebook before execution
-- All scripts change to the notebook directory before execution
-- Log files are timestamped to prevent overwrites
-- Silent script is recommended for automated/scheduled execution
+Review timestamped logs under the staging **`logs`** directory named by the launcher.

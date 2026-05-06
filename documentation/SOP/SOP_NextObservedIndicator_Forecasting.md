@@ -1,29 +1,31 @@
 # Standard Operating Procedure
-## Next Observed Indicator Forecasting — NextObservedIndicatorV3.0
+## Next Observed Indicator Forecasting
 
 | Field | Detail |
 |---|---|
 | **SOP Title** | Next Observed Indicator Forecasting |
-| **Notebook** | GitHub: [`notebooks/observationEventForecasting/NextObservedIndicatorV3.0.ipynb`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/observationEventForecasting/NextObservedIndicatorV3.0.ipynb) |
+| **Script** | SharePoint: **`Documents/HTOC Data Analytics/Python Scripts/NextObservedIndicatorV3.0.py`** (site **`HTOCDataAnalyticsASA`**) · optional **SharePoint SOP appendix:** **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/NextObservedIndicatorV3.0_standalone.py`** |
 | **Version** | 3.0 |
 | **Owner** | HTOC Data Analytics |
 | **Last Reviewed** | April 2026 |
-| **Input** | Daily OpDiv observation files `Z:\HTOC\Data_Analytics\Data\OpDiv_Observations\htoc_opdiv_obs_d{YYYYMMDD}.csv` loaded by `NextObservedIndicatorV3.0.ipynb` |
-| **Output** | Forecast output table in-session; optional per-OpDiv CSVs under `C:\Users\jaskew\Documents\NOI Logs\Predictions\` when save block is enabled |
-| **Current Schedule** | Executed daily at **7:00 AM** via Windows Task Scheduler on **F.R.E.D** |
-| **Associated Batch Files** | No `.bat` file documented for this notebook process |
+| **SOP library** | **SharePoint** (site **`HTOCDataAnalyticsASA`**): **`Documents/HTOC Data Analytics/SOPs/`** *(this procedure `.md` and **`Appendix Scripts/`** live here after you relocate them)* |
+| **Input** | Daily OpDiv observation files `Z:\HTOC\Data_Analytics\Data\OpDiv_Observations\htoc_opdiv_obs_d{YYYYMMDD}.csv` |
+| **Output** | Forecast output to console; optional per-OpDiv CSVs under `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\` |
+| **Execution** | Run **`py`** on synced **`Documents/HTOC Data Analytics/Python Scripts/NextObservedIndicatorV3.0.py`** — see **Section 11**. No launcher **`.bat`** is documented. |
+| **Downstream consolidation** | After forecasts are written to per-partner CSVs, the daily **full report** merge uses SharePoint **`main.py`**: [NextObserved/main.py](https://hhsgov.sharepoint.com/:u:/r/sites/HTOCDataAnalyticsASA/Shared%20Documents/HTOC%20Data%20Analytics/Python%20Scripts/NextObserved/main.py?csf=1&web=1&e=qebIUV) — documented under SharePoint **`Documents/HTOC Data Analytics/SOPs/SOP_Daily_Reports_Consolidation.md`** and **`Documents/HTOC Data Analytics/SOPs/SOP_Next_Obs_Daily_Batch.md`** |
+| **SharePoint script library** | Site **`HTOCDataAnalyticsASA`** — **`Documents/HTOC Data Analytics/Python Scripts/`**. NOI forecasting **`NextObservedIndicatorV3.0.py`** lives at the library root; daily merge **`NextObserved/main.py`** and related assets under **`NextObserved/`** / **`Next_Obs_Daily/`**. **SharePoint SOP folder:** **`Documents/HTOC Data Analytics/SOPs/`**. |
 
 ---
 
 ## 1. Purpose
 
-This SOP describes how to operate the Next Observed Indicator (NOI) forecasting pipeline. The notebook loads daily OpDiv observation records, engineers time-series features for each indicator per OpDiv, and runs a multi-model ensemble to forecast the probability that each indicator will be observed again within **1, 7, 14, 30, and 45-day** horizons. Results are presented as a production-ready prioritization table with categorical confidence labels.
+This SOP describes how to operate the Next Observed Indicator (NOI) forecasting pipeline. The script loads daily OpDiv observation records, engineers time-series features for each indicator per OpDiv, and runs a multi-model ensemble to forecast the probability that each indicator will be observed again within **1, 7, 14, 30, and 45-day** horizons. Results are presented as a production-ready prioritization table with categorical confidence labels.
 
 ---
 
 ## 2. Scope
 
-This procedure applies to HTOC analysts and data engineers who run, maintain, or consume indicator observation forecasts. It covers end-to-end execution of `NextObservedIndicatorV3.0.ipynb`, from environment setup through production output review. The optional feedback/retraining section is also documented for users who wish to improve model accuracy over time.
+This procedure applies to HTOC analysts and data engineers who run, maintain, or consume indicator observation forecasts. It covers end-to-end execution of the forecasting **Python script** (SharePoint **`NextObservedIndicatorV3.0.py`**, optional **SharePoint** appendix script under **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/`**, or other deployed copies synced from **`Documents/HTOC Data Analytics/Python Scripts/`**), from environment setup through production output review. The optional feedback/retraining section is also documented for users who wish to improve model accuracy over time.
 
 ---
 
@@ -34,7 +36,6 @@ This procedure applies to HTOC analysts and data engineers who run, maintain, or
 | Requirement | Notes |
 |---|---|
 | Python 3.x | Compatible with numpy, pandas, scikit-learn, lifelines |
-| Jupyter (VS Code or JupyterLab) | Notebook must be run interactively |
 | scikit-learn | `LogisticRegression`, `GradientBoostingClassifier`, `StandardScaler`, `Pipeline` |
 | lifelines | `WeibullAFTFitter` for survival-model probabilities |
 | numpy, pandas | Standard data processing |
@@ -47,7 +48,7 @@ pip install scikit-learn lifelines
 
 ### 3.2 Input Data Files
 
-The notebook loads daily OpDiv observation CSVs using the following path template:
+The pipeline loads daily OpDiv observation CSVs using the following path template:
 
 ```
 Z:/HTOC/Data_Analytics/Data/OpDiv_Observations/htoc_opdiv_obs_d{YYYYMMDD}.csv
@@ -59,7 +60,7 @@ Files must be available for the **100 days prior to today**. If any daily files 
 
 ## 4. Key Configuration Parameters
 
-These values are defined near the top of the notebook. Review them before each run.
+These values are defined near the top of the source. Review them before each run.
 
 | Parameter | Default | Description |
 |---|---|---|
@@ -76,7 +77,7 @@ These values are defined near the top of the notebook. Review them before each r
 
 ## 5. Pipeline Overview
 
-The notebook executes in the following logical stages. Cells must be run in order from top to bottom.
+The pipeline executes in the following logical stages in a single Python process run.
 
 ```
 [1] Import Dependencies
@@ -95,16 +96,16 @@ The notebook executes in the following logical stages. Cells must be run in orde
         ↓
 [8] Display Production Output Table
         ↓
-[9] (Optional) Feedback Loop & Model Retraining
+[9] (Optional) Feedback loop and model retraining stub
 ```
 
 ---
 
 ## 6. Step-by-Step Execution
 
-### Step 1 — Import Dependencies
+### Step 1 — Import dependencies
 
-The first cell imports:
+At startup the script imports:
 - `numpy`, `pandas`, `os`, `datetime`, `warnings`
 - `sklearn`: `LogisticRegression`, `GradientBoostingClassifier`, `StandardScaler`, `Pipeline`
 - `lifelines`: `WeibullAFTFitter`
@@ -115,7 +116,7 @@ The first cell imports:
 
 ### Step 2 — Set Date Window
 
-The notebook calculates:
+The script calculates:
 - `start_date` = today − 100 days
 - `end_date` = today
 
@@ -165,7 +166,7 @@ The result is stored in `opdiv_merged`, a dictionary keyed by OpDiv name.
 
 ### Step 6 — Define Modeling Functions
 
-This cell defines all helper functions used by `main()`. No computation is performed. Key functions:
+This portion of the script defines all helper functions used by `main()`. No modeling runs until `main()` is invoked. Key functions:
 
 | Function | Purpose |
 |---|---|
@@ -193,7 +194,7 @@ The `main()` function is the core of the pipeline. It loops over each OpDiv in `
 
 Results are stored in a dictionary (`outputs`) keyed by OpDiv name.
 
-**Prediction output path** (currently commented out in the notebook):
+**Prediction output path** (often commented out in `main()`):
 ```
 C:\Users\jaskew\Documents\NOI Logs\Predictions\
 ```
@@ -310,43 +311,34 @@ The final output table contains one row per indicator per OpDiv and includes:
 
 ---
 
-## 11. How to Run the Notebook
+## 11. How to Run
 
-### 11.1 Open the Notebook
+### 11.1 Run the Python script
 
-1. Open **Cursor** (or VS Code / JupyterLab).
-2. Navigate to `H:\HTOC\notebooks\observationEventForecasting\`.
-3. Open `NextObservedIndicatorV3.0.ipynb`.
+Use **`NextObservedIndicatorV3.0.py`** from **`Documents/HTOC Data Analytics/Python Scripts/`** on SharePoint (sync locally as needed). For engineering validation only, use the optional appendix copy below.
 
-### 11.2 Verify Prerequisites
+```powershell
+REM Production (sync from SharePoint first; example local path — adjust drive/folder):
+py "<local-sync>\Documents\HTOC Data Analytics\Python Scripts\NextObservedIndicatorV3.0.py"
+```
 
-Before executing any cells, confirm the following:
+Optional **SharePoint SOP appendix:** **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/NextObservedIndicatorV3.0_standalone.py`**. After syncing locally, **`cd`** to **`...\Documents\HTOC Data Analytics\SOPs\Appendix Scripts`**, then:
+
+```powershell
+py .\NextObservedIndicatorV3.0_standalone.py
+```
+
+### 11.2 Verify prerequisites
 
 - [ ] `Z:\HTOC\Data_Analytics\` is accessible and mapped.
 - [ ] Daily OpDiv CSV files are present for at least the past 100 days in `Z:\HTOC\Data_Analytics\Data\OpDiv_Observations\`.
-- [ ] `scikit-learn` and `lifelines` are installed in the active Python environment.
+- [ ] `scikit-learn` and `lifelines` are installed in the same Python environment you use to launch the script (`pip install scikit-learn lifelines`).
 
-### 11.3 Run All Cells
+### 11.3 Monitor progress
 
-Use **Run All** to execute the notebook from top to bottom:
+Expect console output aligned with **Section 5** (imports, date window, CSV load, panel build, `main()` per OpDiv). If execution raises an exception, stop, fix the root cause, then start a **new** process — do not rely on partial in-memory state.
 
-- **Cursor / VS Code:** Click the `▶▶ Run All` button in the notebook toolbar, or open the Command Palette (`Ctrl+Shift+P`) and select **Notebook: Run All Cells**.
-- **JupyterLab:** `Kernel` → `Restart Kernel and Run All Cells…` → confirm restart.
-
-> **Important:** Cells must be run in sequential order. Each stage depends on dataframe state built by the previous stage.
-
-### 11.4 Monitor Progress
-
-| Stage | Expected Output |
-|---|---|
-| Date window | Printed date list and today's date |
-| CSV load | `src` dataframe displayed with raw observation records |
-| Panel construction | `opdiv_merged['DHA']` (or another OpDiv) displayed as a sample dense panel |
-| `main()` | Per-OpDiv production tables printed; `display(production_output.head(5))` |
-
-If a cell raises an exception, stop and do not run subsequent cells. Refer to the **Troubleshooting** section (Section 12) before restarting.
-
-### 11.5 Enable File Output (Optional)
+### 11.4 Enable file output (optional)
 
 CSV output is currently commented out inside `main()`. To save per-OpDiv prediction files, uncomment these lines:
 
@@ -358,7 +350,7 @@ os.makedirs(opdiv_output_dir, exist_ok=True)
 
 Ensure the target directory exists or can be created.
 
-### 11.6 Typical Run Time
+### 11.5 Typical run time
 
 | Phase | Approximate Duration |
 |---|---|
@@ -368,15 +360,9 @@ Ensure the target directory exists or can be created.
 | Output formatting | < 30 seconds |
 | **Total** | **~6–18 minutes** |
 
-### 11.7 Scheduled Execution
+### 11.6 After a failed run
 
-This pipeline currently runs **automatically every day at 7:00 AM** via **Windows Task Scheduler** on **F.R.E.D**. Manual execution (Sections 11.1–11.5) is only necessary when:
-
-- Troubleshooting a failed or incomplete scheduled run
-- Running an ad hoc forecast outside the normal schedule
-- Testing notebook changes before deploying them to the scheduled task
-
-If the scheduled run fails, check the Task Scheduler history on F.R.E.D for the last execution status and any error output logged by the task. Confirm that F.R.E.D has access to the `Z:\` drive and that the daily OpDiv CSV files for the expected date were available at 7:00 AM when the task executed.
+If **`py`** exits non-zero or output looks wrong, capture the console traceback, confirm **`Z:\`** access, verify OpDiv CSV coverage for the 100-day window, then fix the root cause before re-invoking **`NextObservedIndicatorV3.0.py`** (**Sections 11.1–11.4**).
 
 ---
 
@@ -385,7 +371,7 @@ If the scheduled run fails, check the Task Scheduler history on F.R.E.D for the 
 | Symptom | Likely Cause | Resolution |
 |---|---|---|
 | `src` is empty after load | No CSV files found at the path template | Verify `Z:\` drive is mapped; check date range and file naming convention |
-| `ImportError: lifelines` | Package not installed | Run `pip install lifelines` in the kernel |
+| `ImportError: lifelines` | Package not installed | Run `pip install lifelines` in the Python environment used for the job |
 | `NaN` probabilities in output | Single-class indicator (only ever seen or never seen) | Expected behavior; the model guard returns NaN and these are handled downstream |
 | Weibull AFT convergence warning | Sparse data for some indicators | Non-blocking; model still produces a result; consider excluding very-rare indicators |
 | `ensemble_45d` appears as raw column name | Known `rename` gap in `build_production_output` | Cosmetic only; data is correct; rename column manually if needed for export |
@@ -396,7 +382,7 @@ If the scheduled run fails, check the Task Scheduler history on F.R.E.D for the 
 
 ## 13. Optional: Feedback Loop and Model Retraining
 
-The last cell of the notebook contains a stub for a per-OpDiv feedback and retraining loop. This is **not run as part of the standard pipeline** but can be used to improve model accuracy over time.
+An optional tail section of the codebase contains a stub for per-OpDiv feedback and retraining. It is **not run as part of the standard pipeline** but can be used to improve model accuracy over time.
 
 ### How it works:
 
@@ -436,23 +422,24 @@ High `burstiness` combined with a high probability score indicates an indicator 
 
 ---
 
-## 16. Appendix - Standalone Python Script
+## 16. Appendix — optional standalone copy
 
-The complete standalone script extracted from the notebook is attached at:
+**Production script (Python library):** **`Documents/HTOC Data Analytics/Python Scripts/NextObservedIndicatorV3.0.py`** on site **`HTOCDataAnalyticsASA`**.
 
-`H:\HTOC\documentation\SOP\Appendix Scripts\NextObservedIndicatorV3.0_standalone.py`
-
-Run with:
+**SharePoint SOP appendix (parity checks):** **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/NextObservedIndicatorV3.0_standalone.py`** — **`cd`** to that folder locally, then:
 
 ```powershell
-&"C:\Program Files\Python313\python.exe" "H:\HTOC\documentation\SOP\Appendix Scripts\NextObservedIndicatorV3.0_standalone.py"
+py .\NextObservedIndicatorV3.0_standalone.py
 ```
 
 ---
 
-## 17. Related Documents
+## 17. Related documents
+
+Procedure Markdown files live in **SharePoint** under **`Documents/HTOC Data Analytics/SOPs/`**.
 
 - HTOC OpDiv Observation Feed runbook
 - `SOP_PRISM_ThreatAssessmentScoring.md` — companion SOP for indicator risk scoring
+- `SOP_Daily_Reports_Consolidation.md` / `SOP_Next_Obs_Daily_Batch.md` — downstream daily merge; production script on SharePoint: [NextObserved/main.py](https://hhsgov.sharepoint.com/:u:/r/sites/HTOCDataAnalyticsASA/Shared%20Documents/HTOC%20Data%20Analytics/Python%20Scripts/NextObserved/main.py?csf=1&web=1&e=qebIUV)
 - `Z:\HTOC\Data_Analytics\Data\OpDiv_Observations\` (input data location)
-- Previous notebook versions: `NextObservedIndicatorV1.0.ipynb`, `NextObservedIndicatorV2.0.ipynb`
+- Earlier major versions may exist in historical archives under `observationEventForecasting/` for audit only — do not assume parity with the current production script.

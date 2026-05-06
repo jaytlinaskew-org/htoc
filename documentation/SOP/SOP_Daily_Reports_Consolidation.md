@@ -1,17 +1,17 @@
 # Standard Operating Procedure
-## Daily Partner Prediction Report Consolidation — daily_reports
+## Daily Partner Prediction Report Consolidation
 
 | Field | Detail |
 |---|---|
 | **SOP Title** | Daily Partner Prediction Report Consolidation |
-| **Notebook** | GitHub: [`notebooks/observationEventForecasting/daily_reports.ipynb`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/notebooks/observationEventForecasting/daily_reports.ipynb) |
-| **Batch Script** | GitHub: [`scripts/batch-processing-script/Next_Obs_Daily/src/main.py`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/scripts/batch-processing-script/Next_Obs_Daily/src/main.py) |
+| **Batch script** | SharePoint: [NextObserved/main.py](https://hhsgov.sharepoint.com/:u:/r/sites/HTOCDataAnalyticsASA/Shared%20Documents/HTOC%20Data%20Analytics/Python%20Scripts/NextObserved/main.py?csf=1&web=1&e=qebIUV) — **`Documents/HTOC Data Analytics/Python Scripts/NextObserved/main.py`** |
 | **Owner** | HTOC Data Analytics |
 | **Last Reviewed** | April 2026 |
+| **SOP library** | **SharePoint** (site **`HTOCDataAnalyticsASA`**): **`Documents/HTOC Data Analytics/SOPs/`** *(published procedure `.md` files and **`Appendix Scripts/`** live here)* |
 | **Input** | Partner prediction CSVs `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\{PartnerName}\{YYYYMMDD}.csv` |
 | **Output** | Consolidated CSV `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\Full Daily Reports\full_daily_report_{YYYYMMDD}.csv` |
-| **Current Schedule** | Executed daily at **8:15 AM** via Windows Task Scheduler on **F.R.E.D** |
-| **Associated Batch Files** | None documented; automated path executes `scripts/batch-processing-script/Next_Obs_Daily/src/main.py` directly |
+| **Execution** | Run **`next_observed_daily_reports.bat`** from **`Documents/HTOC Data Analytics/Python Scripts/Next_Obs_Daily/`** after sync, **or** run **`py`** on synced **`NextObserved/main.py`** with the same setup the batch file uses—see SharePoint **`Documents/HTOC Data Analytics/SOPs/SOP_Next_Obs_Daily_Batch.md`**. |
+| **Associated batch / script** | SharePoint **`NextObserved/main.py`** and **`Next_Obs_Daily/next_observed_daily_reports.bat`** — confirm your local **`next_observed_daily_reports.bat`** still points at the **`main.py`** you intend to run. |
 
 ---
 
@@ -19,18 +19,13 @@
 
 This SOP describes the daily consolidation of per-partner NOI (Next Observed Indicator) prediction CSVs into a single full daily report. Each day, partner-specific prediction files are written to subfolders under the `OpDiv_Predictions` directory. This process discovers those files, merges them into one consolidated dataset, and writes a dated output CSV to the `Full Daily Reports` folder.
 
-This process has two execution paths:
-
-| Path | Use When |
-|---|---|
-| **Automated batch script** (`main.py`) | Normal daily operations — runs automatically on a schedule |
-| **Interactive notebook** (`daily_reports.ipynb`) | Manual runs, troubleshooting, or backfilling historical dates |
+This process runs as **Python**: operators start **`main.py`** via the Next_Obs launcher **`.bat`** (or **`py`** on **`main.py`**), or use the appendix **`daily_reports_standalone.py`** for ad hoc runs.
 
 ---
 
 ## 2. Scope
 
-This procedure applies to HTOC analysts and data engineers who run, monitor, or troubleshoot the daily prediction report consolidation. It covers both the automated script path and the interactive notebook path.
+This procedure applies to HTOC analysts and data engineers who run, monitor, or troubleshoot the daily prediction report consolidation. It covers running **`main.py`** (batch or direct **`py`**), ad hoc runs, and troubleshooting.
 
 ---
 
@@ -52,7 +47,7 @@ pip install pandas
 
 ### 3.2 Input Data
 
-Partner prediction CSVs must be present under the `OpDiv_Predictions` directory tree **before** this process runs. These files are produced by the NOI forecasting pipeline (`NextObservedIndicatorV3.0.ipynb` / its scheduled batch equivalent). See `SOP_NextObservedIndicator_Forecasting.md` for details on that upstream process.
+Partner prediction CSVs must be present under the `OpDiv_Predictions` directory tree **before** this process runs. These files are produced by the NOI forecasting pipeline (see SharePoint **`Documents/HTOC Data Analytics/SOPs/SOP_NextObservedIndicator_Forecasting.md`**).
 
 Expected input file naming convention:
 ```
@@ -63,7 +58,7 @@ Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\{PartnerName}\{YYYYMMDD}.csv
 
 ## 4. Key Configuration
 
-Both the notebook and `main.py` share the same path constants:
+Production `main.py` and the appendix standalone script use the same path constants:
 
 | Constant | Value |
 |---|---|
@@ -83,7 +78,7 @@ The loader uses `os.walk` to recursively traverse all subfolders under `DATA_PAT
 
 1. Skips any path containing a folder name in `EXCLUDE_FOLDERS`.
 2. Treats the **immediate folder name** as the `Partner` value.
-3. Matches files whose names end with `{YYYYMMDD}.csv` — in the automated path, only **today's** date is matched.
+3. Matches files whose names end with `{YYYYMMDD}.csv` — in the default **`main.py`** path, only **today's** date is matched.
 
 ### 5.2 Consolidation
 
@@ -105,15 +100,15 @@ The output file is **never overwritten** — if it already exists for today's da
 
 ---
 
-## 6. Automated Execution (main.py)
+## 6. Running `main.py` (today-only)
 
-### 6.1 Schedule
+### 6.1 Operator entry points
 
-`main.py` runs automatically every day at **8:15 AM** via **Windows Task Scheduler** on **F.R.E.D**. It executes the **today-only** consolidation flow: load today's partner CSVs → merge → save single consolidated report.
+Production **`main.py`** is maintained on **SharePoint**: [NextObserved/main.py](https://hhsgov.sharepoint.com/:u:/r/sites/HTOCDataAnalyticsASA/Shared%20Documents/HTOC%20Data%20Analytics/Python%20Scripts/NextObserved/main.py?csf=1&web=1&e=qebIUV). **Typical run:** start **`next_observed_daily_reports.bat`** from your synced **`Next_Obs_Daily/`** folder (installs deps, invokes **`main.py`**, writes logs — see SharePoint **`Documents/HTOC Data Analytics/SOPs/SOP_Next_Obs_Daily_Batch.md`**). **Alternative:** from a shell, run **`py -3.13 path\to\main.py`** using the same working directory and packages the batch file expects. The script executes the **today-only** consolidation flow: load today's partner CSVs → merge → save a single consolidated report.
 
-Manual execution (Section 7) is only necessary when troubleshooting a failed scheduled run, backfilling historical dates, or testing changes to the notebook before deployment.
+Use **Section 7** when backfilling historical dates, spot-checking with a standalone copy, or validating a revised **`main.py`** before publishing it to SharePoint.
 
-### 6.2 Script Logic
+### 6.2 Script logic
 
 ```
 main()
@@ -130,7 +125,7 @@ main()
               └── Else → makedirs + to_csv + print path
 ```
 
-### 6.3 Verifying a Successful Automated Run
+### 6.3 Verifying a successful run
 
 Confirm the run succeeded by checking that:
 1. The file `full_daily_report_{YYYYMMDD}.csv` exists in `Full Daily Reports` for today's date.
@@ -138,38 +133,29 @@ Confirm the run succeeded by checking that:
 
 ---
 
-## 7. Manual / Interactive Execution (Notebook)
+## 7. Ad hoc execution (Python)
 
-Use `daily_reports.ipynb` when you need to run the consolidation manually, troubleshoot a failed automated run, or backfill reports for historical dates.
+Use a **local copy** of production **`main.py`** (SharePoint) or the appendix **`daily_reports_standalone.py`** when you need to run consolidation without the batch launcher—for example after a failed batch run, spot checks, or while testing a code change before publish.
 
-### 7.1 Open the Notebook
-
-1. Open **Cursor** (or VS Code / JupyterLab).
-2. Navigate to `H:\HTOC\notebooks\observationEventForecasting\`.
-3. Open `daily_reports.ipynb`.
-
-### 7.2 Verify Prerequisites
+### 7.1 Verify prerequisites
 
 - [ ] `Z:\HTOC\Data_Analytics\` is accessible and mapped.
 - [ ] Partner prediction CSVs for the target date exist under `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\`.
+- [ ] Python 3.x with `pandas` (and any imports your deployed `main.py` requires).
 
-### 7.3 Standard Run — Today's Report
+### 7.2 Run today-only consolidation
 
-Run **Cell 0** and **Cell 1** in order:
+From a shell, with the script on disk (path per your deployment):
 
-- **Cell 0** loads today's partner CSVs and displays the consolidated `daily_search` DataFrame.
-- **Cell 1** saves `full_daily_report_{today_str}.csv` to the `Full Daily Reports` folder (skips if already exists).
+```powershell
+py "path\to\main.py"
+```
 
-**Verify:** After Cell 0, `daily_search` should be non-empty and display rows from multiple partners. After Cell 1, confirm the output path is printed.
+Expected behavior matches **Section 6.2**: non-empty partner files for today produce `full_daily_report_{YYYYMMDD}.csv` under `Full Daily Reports` unless that file already exists.
 
-### 7.4 Backfill Run — All Historical Dates
+### 7.3 Backfill or custom date ranges
 
-> **Note:** Cells 2 and 3 contain valid Python code but are currently stored as **markdown cells** in the notebook. To use them, convert each to a code cell first (`Cell` → `Cell Type` → `Code` in JupyterLab, or click the cell type selector in VS Code).
-
-- **Cell 2** redefines `load_all_csvs_from_folders` to match **all** dated CSVs (not just today's) and reloads `daily_search` with the full history.
-- **Cell 3** loops over each unique `FileDate` in `daily_search` and writes a separate `full_daily_report_{FileDate}.csv` for each date.
-
-Use this path when catching up after missed days or rebuilding the `Full Daily Reports` archive.
+The production **`main.py`** path is **today-only**. For historical rebuilds, either (a) temporarily adjust the date filter in a **non-production copy** of the script and run once per needed date with care, or (b) extend a private copy of the loader logic to iterate `FileDate` values—always validate outputs before replacing production archives.
 
 ---
 
@@ -191,11 +177,11 @@ The output file contains all prediction columns from the upstream NOI forecastin
 | Symptom | Likely Cause | Resolution |
 |---|---|---|
 | `"No CSV files found for today."` | Partner prediction CSVs not yet written for today | Verify the NOI forecasting pipeline ran successfully; check `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\` for today's files |
-| `"File already exists: …"` | Automated run already completed successfully | No action needed; this is the expected idempotency guard |
+| `"File already exists: …"` | A successful run already wrote today’s file | No action needed; this is the expected idempotency guard |
 | `"No data to save."` | `daily_search` is empty after loading | Same as above — check upstream prediction files |
 | Output file is missing partners | One or more partner subfolders had no matching file | Check the partner's subfolder for a `{YYYYMMDD}.csv` file; the loader skips unreadable files but prints a skip message |
 | `Skipping {path}: …` printed | A CSV file could not be read (encoding, permissions, corruption) | Inspect the file at the printed path; re-run after fixing or removing the corrupt file |
-| Backfill cells (2 & 3) don't execute | Cells are stored as markdown type | Convert cells 2 and 3 to code cells before running |
+| Custom backfill needed | Built-in script is today-only | Use a controlled copy of the script with explicit date logic; see **Section 7.3** |
 | `Z:\` path not found | Network drive not mapped | Map the `Z:\` drive to `\\cscso1fsappv01\...` and re-run |
 
 ---
@@ -206,31 +192,31 @@ This process sits **downstream** of the NOI forecasting pipeline and **upstream*
 
 | Step | Process | Output |
 |---|---|---|
-| 1 | NOI forecasting pipeline (`NextObservedIndicatorV3.0.ipynb` or batch equivalent) runs first | Partner-level daily files: `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\{PartnerName}\{YYYYMMDD}.csv` |
-| 2 | Daily reports consolidation process (`main.py` or `daily_reports.ipynb`) runs second | Consolidated daily file: `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\Full Daily Reports\full_daily_report_{YYYYMMDD}.csv` |
+| 1 | NOI forecasting pipeline runs first | Partner-level daily files: `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\{PartnerName}\{YYYYMMDD}.csv` |
+| 2 | Daily reports consolidation (`main.py`) runs second | Consolidated daily file: `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\Full Daily Reports\full_daily_report_{YYYYMMDD}.csv` |
 | 3 | Downstream reporting/distribution jobs consume the consolidated file | Partner distribution products and operational reports |
 
 If the daily report is missing or incomplete, check the NOI forecasting step first before rerunning this process.
 
 ---
 
-## 11. Appendix - Standalone Python Script
+## 11. Appendix — standalone Python script
 
-The complete standalone script extracted from the notebook is attached at:
+Published **SharePoint** path *(site **`HTOCDataAnalyticsASA`*)*: **`Documents/HTOC Data Analytics/SOPs/Appendix Scripts/daily_reports_standalone.py`**
 
-`H:\HTOC\documentation\SOP\Appendix Scripts\daily_reports_standalone.py`
-
-Run with:
+After syncing **`Documents/HTOC Data Analytics/`** locally, **`cd`** to **`...\Documents\HTOC Data Analytics\SOPs\Appendix Scripts`**, then:
 
 ```powershell
-&"C:\Program Files\Python313\python.exe" "H:\HTOC\documentation\SOP\Appendix Scripts\daily_reports_standalone.py"
+py .\daily_reports_standalone.py
 ```
 
 ---
 
-## 12. Related Documents
+## 12. Related documents
+
+Procedure Markdown files for this workflow live in **SharePoint** under **`Documents/HTOC Data Analytics/SOPs/`**.
 
 - `SOP_NextObservedIndicator_Forecasting.md` — upstream process that generates the per-partner input CSVs
 - `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\` (input data location)
 - `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\Full Daily Reports\` (output location)
-- `scripts/batch-processing-script/Next_Obs_Daily/src/main.py` — production batch script
+- SharePoint ([NextObserved/main.py](https://hhsgov.sharepoint.com/:u:/r/sites/HTOCDataAnalyticsASA/Shared%20Documents/HTOC%20Data%20Analytics/Python%20Scripts/NextObserved/main.py?csf=1&web=1&e=qebIUV)) — production **`main.py`**

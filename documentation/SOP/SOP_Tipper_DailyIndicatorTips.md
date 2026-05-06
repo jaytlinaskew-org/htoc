@@ -4,15 +4,17 @@
 | Field | Detail |
 |---|---|
 | **SOP Title** | Tipper — Daily Partner Indicator Tips |
-| **Script** | GitHub: [`scripts/batch-processing-script/Tipper/main.py`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/scripts/batch-processing-script/Tipper/main.py) |
-| **Batch Launcher** | GitHub: [`scripts/batch-processing-script/Tipper/run_tipper.bat`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/scripts/batch-processing-script/Tipper/run_tipper.bat) |
+| **Script** | SharePoint: **`Documents/HTOC Data Analytics/Python Scripts/Tipper/main.py`** (site **`HTOCDataAnalyticsASA`**) |
+| **Batch launcher** | **`Documents/HTOC Data Analytics/Python Scripts/Tipper/run_tipper.bat`** (sync locally; file name must match your library) |
 | **Version** | 1.0 |
 | **Owner** | HTOC Data Analytics |
 | **Last Reviewed** | April 2026 |
+| **SOP library** | **SharePoint** (site **`HTOCDataAnalyticsASA`**): **`Documents/HTOC Data Analytics/SOPs/`** *(published procedure `.md` files live here)* |
 | **Input** | ThreatConnect indicators + OpDiv observation CSVs `\\10.1.4.22\data\HTOC\Data_Analytics\Data\OpDiv_Observations\htoc_opdiv_obs_d{YYYYMMDD}.csv` |
 | **Output** | Excel workbook `\\10.1.4.22\data\HTOC\HTOC Reports\Tippers\tippers_by_partner_{YYYYMMDD}.xlsx` |
-| **Current Schedule** | Executed daily at **7:00 AM** via Windows Task Scheduler on **F.R.E.D** |
-| **Associated Batch Files** | `scripts/batch-processing-script/Tipper/run_tipper.bat` |
+| **Execution** | Run **`run_tipper.bat`** from your synced **`Tipper/`** folder under the SharePoint script library; **or** run **`py`** / **`python`** on **`main.py`** after installing dependencies (see **Section 7**). |
+| **Associated batch file** | **`Tipper/run_tipper.bat`** under **`Documents/HTOC Data Analytics/Python Scripts/`** |
+| **SharePoint script library** | Site **`HTOCDataAnalyticsASA`** — **`Documents/HTOC Data Analytics/Python Scripts/`**. Tipper **`Tipper/main.py`**, **`run_tipper.bat`**, and **`utils/`** (including **`config.json`**) should all come from the synced **`Tipper/`** tree. **SharePoint SOP folder:** **`Documents/HTOC Data Analytics/SOPs/`**. |
 
 ---
 
@@ -47,13 +49,13 @@ Example dependency install command:
 pip install pandas
 ```
 
-> **Note:** The script accesses `\\10.1.4.22\` via UNC path directly, so the `Z:\` drive does not need to be mapped for the automated run.
+> **Note:** The script accesses `\\10.1.4.22\` via UNC path directly, so the **`Z:\`** drive does not need to be mapped for a successful run.
 
 ### 3.2 Configuration File
 
-API credentials are loaded from:
+API credentials are loaded from **`utils/config.json`** relative to your deployed **`Tipper/`** root (for example the folder that contains **`main.py`** and **`run_tipper.bat`** after you sync from SharePoint):
 ```
-scripts/batch-processing-script/Tipper/utils/config.json
+Tipper\utils\config.json
 ```
 
 This file is read by `utils/config_loader.py` and must contain valid `access_id`, `secret_key`, `default_org`, and `base_url` values for ThreatConnect. Contact the HTOC admin if credentials have rotated.
@@ -255,11 +257,11 @@ Each sheet:
 
 ---
 
-## 7. Batch Launcher (run_tipper.bat)
+## 7. Batch launcher (`run_tipper.bat`)
 
-The batch file `run_tipper.bat` is the entry point used by Task Scheduler. It runs automatically every day at **7:00 AM** via **Windows Task Scheduler** on **F.R.E.D**. It wraps `main.py` with dependency checks and structured logging.
+The batch file **`run_tipper.bat`** is the supported operator entry point: it upgrades key packages, runs **`main.py`**, and writes structured logs next to the script.
 
-Manual execution is only necessary when troubleshooting a failed scheduled run or re-running after correcting an upstream data issue.
+To run without the batch file, install **`pandas pytz numpy requests xlsxwriter openpyxl`** (and any missing imports **`main.py`** requires), **`cd`** to the **`Tipper`** folder so **`utils/`** resolves, then run **`python main.py`** using the interpreter your team standardizes on.
 
 ### Execution sequence:
 
@@ -298,7 +300,7 @@ Manual execution is only necessary when troubleshooting a failed scheduled run o
 | Symptom | Likely Cause | Resolution |
 |---|---|---|
 | `TipperRunLogs.json` shows `PipInstallFailed` | Network/proxy blocked pip download | Run the pip install command manually from a terminal to confirm connectivity; packages may already be installed — check if `main.py` can be run directly |
-| `[ERROR] Failed to initialize ThreatConnect` | Invalid or expired API credentials | Update `utils\config.json` with current credentials; verify ThreatConnect is reachable from F.R.E.D |
+| `[ERROR] Failed to initialize ThreatConnect` | Invalid or expired API credentials | Update `utils\config.json` with current credentials; verify ThreatConnect is reachable from the host where you ran **`run_tipper.bat`** / **`main.py`** |
 | `[DEBUG] observed_src is empty` | No indicators found in TC for the 3-day window | Check ThreatConnect for indicator activity; verify the query owner (`HTOC Org`) and lookback are correct |
 | `[DEBUG] recent_tags is empty after processing` | No indicators matched to partner API tags in the last 24 hours | Verify OpDiv CSVs for the target dates exist; check that partner API tags are being applied in ThreatConnect |
 | `[DEBUG] filtered_recent_tags is empty` | All indicators were either SOAR-created or had VT score ≤ 10 | Normal on low-activity days; review SOAR exclusion criteria or lower the VT threshold if needed |
@@ -328,9 +330,11 @@ If OpDiv CSVs for the target date are missing, neither the NOI forecasting pipel
 
 ---
 
-## 11. Related Documents
+## 11. Related documents
+
+Procedure Markdown files live in **SharePoint** under **`Documents/HTOC Data Analytics/SOPs/`**.
 
 - `SOP_NextObservedIndicator_Forecasting.md` — shares the same OpDiv observation CSV inputs
 - `SOP_Daily_Reports_Consolidation.md` — downstream daily report process
 - `\\10.1.4.22\data\HTOC\HTOC Reports\Tippers\` (output location)
-- `scripts/batch-processing-script/Tipper/utils/config.json` (ThreatConnect credentials)
+- **`Tipper/utils/config.json`** on your deployment host (ThreatConnect credentials)

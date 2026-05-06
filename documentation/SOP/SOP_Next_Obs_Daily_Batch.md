@@ -4,26 +4,27 @@
 | Field | Detail |
 |---|---|
 | **SOP Title** | Next_Obs_Daily Batch Process |
-| **Script** | GitHub: [`scripts/batch-processing-script/Next_Obs_Daily/src/main.py`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/scripts/batch-processing-script/Next_Obs_Daily/src/main.py) |
-| **Batch Launcher** | GitHub: [`scripts/batch-processing-script/Next_Obs_Daily/next_observed_daily_reports.bat`](https://github.com/jaytlinaskew-OIS/HTOC/blob/main/scripts/batch-processing-script/Next_Obs_Daily/next_observed_daily_reports.bat) |
+| **Script** | SharePoint: [NextObserved/main.py](https://hhsgov.sharepoint.com/:u:/r/sites/HTOCDataAnalyticsASA/Shared%20Documents/HTOC%20Data%20Analytics/Python%20Scripts/NextObserved/main.py?csf=1&web=1&e=qebIUV) — path **`Documents/HTOC Data Analytics/Python Scripts/NextObserved/main.py`** |
+| **Batch launcher** | **`Documents/HTOC Data Analytics/Python Scripts/Next_Obs_Daily/next_observed_daily_reports.bat`** (sync locally); must invoke the same **`main.py`** revision you intend to run |
 | **Owner** | HTOC Data Analytics |
 | **Last Reviewed** | April 2026 |
+| **SOP library** | **SharePoint** (site **`HTOCDataAnalyticsASA`**): **`Documents/HTOC Data Analytics/SOPs/`** *(published procedure `.md` files and **`Appendix Scripts/`** live here)* |
 | **Input** | Partner forecast CSVs in `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\{PartnerName}\{YYYYMMDD}.csv` |
 | **Output** | Daily consolidated CSV in `Z:\HTOC\Data_Analytics\Data\OpDiv_Predictions\Full Daily Reports\full_daily_report_{YYYYMMDD}.csv`; execution logs in `run_log.json` and `output.log` |
-| **Current Schedule** | Executed daily at **8:15 AM** via Windows Task Scheduler on **F.R.E.D** |
-| **Associated Batch Files** | `scripts/batch-processing-script/Next_Obs_Daily/next_observed_daily_reports.bat` |
+| **Execution** | Run **`next_observed_daily_reports.bat`** from your synced copy of **`Documents/HTOC Data Analytics/Python Scripts/Next_Obs_Daily/`**, **or** run **`py -3.13`** on a synced copy of SharePoint **`NextObserved/main.py`** using the same working directory and dependency steps the batch file performs. |
+| **Associated batch file** | **`Next_Obs_Daily/next_observed_daily_reports.bat`** under the SharePoint script library (see **Batch launcher** row) |
 
 ---
 
 ## 1. Purpose
 
-This SOP documents the automated **Next_Obs_Daily** batch process that consolidates partner-level NOI prediction outputs into a single daily file for downstream reporting and distribution. The process runs unattended via Task Scheduler and provides run-level logging for operations support.
+This SOP documents the **Next_Obs_Daily** process that consolidates partner-level NOI prediction outputs into a single daily file for downstream reporting and distribution. Production **`main.py`** lives at **`Documents/HTOC Data Analytics/Python Scripts/NextObserved/main.py`** on that site (linked in the header table). Operators invoke **`next_observed_daily_reports.bat`** or **`main.py`** directly; logs document each run for support.
 
 ---
 
 ## 2. Scope
 
-This SOP applies to HTOC analysts and engineers responsible for operating, monitoring, and troubleshooting the `Next_Obs_Daily` scheduled task. It covers the batch launcher, Python processing logic, logging, validation, and failure handling.
+This SOP applies to HTOC analysts and engineers responsible for operating, monitoring, and troubleshooting **`Next_Obs_Daily`** runs. It covers the batch launcher, Python processing logic, logging, validation, and failure handling.
 
 ---
 
@@ -36,7 +37,7 @@ This SOP applies to HTOC analysts and engineers responsible for operating, monit
 | Python 3.13 via `py -3.13` | Required by batch guard clause in `.bat` |
 | pandas, openpyxl | Installed on each run by the batch file (`pip install --user`) |
 | Access to `Z:\HTOC\Data_Analytics\` | Required for input and output paths |
-| Task Scheduler access on F.R.E.D | Required to verify task history and trigger reruns |
+| Shell access on execution host | Run `.bat` or `py -3.13` interactively when troubleshooting failed runs |
 
 Example dependency install command:
 ```powershell
@@ -57,10 +58,10 @@ If no files exist for the current date, the script exits cleanly with `No data t
 
 | Component | Path | Role |
 |---|---|---|
-| Batch launcher | `scripts/batch-processing-script/Next_Obs_Daily/next_observed_daily_reports.bat` | Validates Python runtime, installs dependencies, runs script, writes logs |
-| Main script | `scripts/batch-processing-script/Next_Obs_Daily/src/main.py` | Loads today’s partner CSVs, adds metadata columns, writes consolidated CSV |
-| Structured log | `scripts/batch-processing-script/Next_Obs_Daily/run_log.json` | JSON history of timestamp + output line per run |
-| Raw output log | `scripts/batch-processing-script/Next_Obs_Daily/output.log` | Full pip + script stdout/stderr stream |
+| Batch launcher | **`Next_Obs_Daily/next_observed_daily_reports.bat`** (SharePoint library; sync locally) | Validates Python runtime, installs dependencies, runs script, writes logs |
+| Main script | SharePoint: [NextObserved/main.py](https://hhsgov.sharepoint.com/:u:/r/sites/HTOCDataAnalyticsASA/Shared%20Documents/HTOC%20Data%20Analytics/Python%20Scripts/NextObserved/main.py?csf=1&web=1&e=qebIUV) | Loads today’s partner CSVs, adds metadata columns, writes consolidated CSV |
+| Structured log | **`run_log.json`** next to **`next_observed_daily_reports.bat`** on the run host | JSON history of timestamp + output line per run |
+| Raw output log | **`output.log`** next to **`next_observed_daily_reports.bat`** on the run host | Full pip + script stdout/stderr stream |
 
 ---
 
@@ -68,16 +69,18 @@ If no files exist for the current date, the script exits cleanly with `No data t
 
 | Step | Action | Expected Result |
 |---|---|---|
-| 1 | Task Scheduler triggers `next_observed_daily_reports.bat` at 8:15 AM | Batch starts in script directory |
+| 1 | Operator runs **`next_observed_daily_reports.bat`** from its directory (double-click or `cmd`) | Batch sets working directory and starts the launcher flow |
 | 2 | Batch verifies `py -3.13` availability | Continues if present; exits with error if missing |
 | 3 | Batch runs pip install for `pandas openpyxl` | Dependencies ensured for current user profile |
-| 4 | Batch executes `src/main.py` | Script scans partner folders and builds `daily_search` dataframe |
+| 4 | Batch executes production `main.py` (hosted on SharePoint; see header table) | Script scans partner folders and builds `daily_search` dataframe |
 | 5 | Script writes `full_daily_report_{YYYYMMDD}.csv` if not already present | Consolidated output file exists in `Full Daily Reports` |
 | 6 | Batch appends run entry to `run_log.json` and full output to `output.log` | Run is auditable |
 
 ---
 
-## 6. Python Script Logic (`src/main.py`)
+## 6. Python Script Logic (`main.py`)
+
+Runs should use the **SharePoint** copy of **`main.py`** referenced in the header table (synced locally as your team prefers). If you maintain an extra copy of **`main.py`** outside SharePoint, verify it matches the SharePoint revision before using it for operations.
 
 ### 6.1 Key constants
 
@@ -104,7 +107,7 @@ If `full_daily_report_{YYYYMMDD}.csv` already exists, the script prints `File al
 
 ---
 
-## 7. Batch Launcher Behavior (`next_observed_daily_reports.bat`)
+## 7. Batch launcher behavior (`next_observed_daily_reports.bat`)
 
 - Forces execution in script directory (`cd /d "%~dp0"`).
 - Enforces Python 3.13 usage (`py -3.13`) to avoid older pip/runtime issues.
@@ -119,7 +122,7 @@ If `full_daily_report_{YYYYMMDD}.csv` already exists, the script prints `File al
 
 A successful run should satisfy all of the following:
 
-1. Task Scheduler result code is success (`0x0`).
+1. The batch exits with code **0** (or **`py`** returns **0** if you invoked **`main.py`** without the `.bat`).
 2. `run_log.json` has a new entry with today’s timestamp.
 3. Entry output is either:
    - `Saved to ...full_daily_report_{YYYYMMDD}.csv`, or
@@ -137,21 +140,22 @@ A successful run should satisfy all of the following:
 | `No CSV files found for today.` then `No data to save.` | Upstream partner files not present yet | Verify upstream NOI process completed and date-stamped files exist |
 | `Skipping <file>` errors | One or more CSV files unreadable/corrupt | Inspect and fix malformed CSV in the partner folder |
 | `File already exists: ...` | Re-run for same date | Expected idempotent behavior; no action needed |
-| Task failed but no clear message in scheduler | Output only in log files | Review `output.log` and latest object in `run_log.json` |
+| Run failed but no clear message in the console | Output only in log files | Review `output.log` and latest object in `run_log.json` |
 
 ---
 
 ## 10. Operator Decision Points
 
-- If no data exists by 8:15 AM, verify upstream forecast process before rerunning this batch.
-- If run fails due to environment/runtime, fix Python or package issues first, then rerun task manually.
+- If no partner CSVs exist for today yet, verify the upstream forecast process before rerunning this batch.
+- If a run fails due to environment/runtime, fix Python or package issues first, then rerun **`next_observed_daily_reports.bat`** or **`main.py`** manually.
 - If output exists but appears incomplete, validate partner source folders and rerun only after correcting source data.
 
 ---
 
-## 11. Related Documents
+## 11. Related documents
 
-- `SOP_Daily_Reports_Consolidation.md` — combined notebook + script process documentation
+Procedure Markdown files live in **SharePoint** under **`Documents/HTOC Data Analytics/SOPs/`**.
+
+- `SOP_Daily_Reports_Consolidation.md` — consolidation process (production `main.py` + appendix standalone)
 - `SOP_NextObservedIndicator_Forecasting.md` — upstream forecast generation process
-- GitHub repository: [jaytlinaskew-OIS/HTOC](https://github.com/jaytlinaskew-OIS/HTOC)
 
