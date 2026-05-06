@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import json; nb=json.load\\(open\\('Splunk_TC_Address_Index.ipynb',encoding='utf-8'\\)\\); [print\\(i, c['cell_type'], c.get\\('id','?'\\), repr\\(\\(''.join\\(c['source']\\) if isinstance\\(c['source'],list\\) else c['source']\\)[:80]\\)\\) for i,c in enumerate\\(nb['cells']\\)]\")",
+      "Bash(py -c \"import json; nb=json.load\\(open\\('Splunk_TC_Address_Index.ipynb',encoding='utf-8'\\)\\); [print\\(i, c['cell_type'], c.get\\('id','?'\\), repr\\(\\(''.join\\(c['source']\\) if isinstance\\(c['source'],list\\) else c['source']\\)[:80]\\)\\) for i,c in enumerate\\(nb['cells']\\)]\")",
+      "Bash(py -c 'import json; nb=json.load\\(open\\('\\\\''Splunk_TC_Address_Index.ipynb'\\\\'',encoding='\\\\''utf-8'\\\\''\\)\\); *)",
+      "Bash(py dump_cells.py)",
+      "Bash(py -c ' *)",
+      "Bash(py)"
+    ]
+  }
+}
