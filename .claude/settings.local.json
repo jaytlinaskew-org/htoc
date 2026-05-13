@@ -6,7 +6,25 @@
       "Bash(py -c 'import json; nb=json.load\\(open\\('\\\\''Splunk_TC_Address_Index.ipynb'\\\\'',encoding='\\\\''utf-8'\\\\''\\)\\); *)",
       "Bash(py dump_cells.py)",
       "Bash(py -c ' *)",
-      "Bash(py)"
+      "Bash(py)",
+      "Bash(pandoc --version)",
+      "Bash(python -c \"import markdown, weasyprint; print\\('ok'\\)\")",
+      "Bash(python -c \"import markdown2; print\\('md2 ok'\\)\")",
+      "Bash(python -c \"from reportlab.pdfgen import canvas; print\\('reportlab ok'\\)\")",
+      "Bash(python -c \"import markdown_pdf; print\\('mdpdf ok'\\)\")",
+      "Bash(where python *)",
+      "Bash(py -c \"import sys; print\\(sys.version\\)\")",
+      "Bash(py -c \"from reportlab.pdfgen import canvas; print\\('reportlab ok'\\)\")",
+      "Bash(py -c \"import markdown_pdf; print\\('md_pdf ok'\\)\")",
+      "Bash(py -c \"import weasyprint; print\\('weasy ok'\\)\")",
+      "Bash(py -c \"import fpdf; print\\('fpdf ok'\\)\")",
+      "Bash(py _build_prism_pdf.py)",
+      "Bash(python _build_prism_pdf.py)",
+      "Bash(python -c ' *)",
+      "Bash(awk -F: '{print $1, $2}')",
+      "Bash(awk '/\"id\": \"219d3e20\"/,/\"execution_count\"|\"cell_type\": \"\\(code|markdown\\)\"/' \"h:/HTOC/notebooks/Gap Observation 2.0/Splunk_TC_Address_Index.ipynb\")",
+      "Bash(py _patch_bins.py)",
+      "Bash(grep -o 'def _fmt_obs\\(n\\):[^\"]\\\\{0,100\\\\}' \"h:/HTOC/notebooks/Gap Observation 2.0/Splunk_TC_Address_Index.ipynb\")"
     ]
   }
 }

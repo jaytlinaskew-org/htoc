@@ -261,8 +261,8 @@ if normalized_data:
     observed_src = observed_src[observed_src['ownerName'] == 'HTOC Org'].copy()
     # Keep rows where top-level rating >= 3 OR coalesced threatAssessRating >= 3, and confidence >= 50.
     # Coalesce flat vs nested threatAssess columns per row.
-    _rating_cols = ("threatAssessRating", "threatAssess.threatAssessRating")
-    _confidence_cols = ("threatAssessConfidence", "threatAssess.threatAssessConfidence")
+    _rating_cols = ("threatAssessRating", "threatAssess.threatAssessRating", "rating")
+    _confidence_cols = ("threatAssessConfidence", "threatAssess.threatAssessConfidence", "confidence")
 
     def _first_non_null_numeric(df, ordered_cols):
         present = [c for c in ordered_cols if c in df.columns]
@@ -285,10 +285,17 @@ if normalized_data:
         _r = pd.to_numeric(observed_src["rating"], errors="coerce")
     else:
         _r = pd.Series(float("nan"), index=observed_src.index, dtype=float)
+
+    if "confidence" in observed_src.columns:
+        _c = pd.to_numeric(observed_src["confidence"], errors="coerce")
+    else:
+        _c = pd.Series(float("nan"), index=observed_src.index, dtype=float)
+
     _pre_ta = len(observed_src)
     # Use >= 50 so a boundary value of 50.0 is included (strict > 50 dropped those rows).
     _pass_rating_band = (_tar >= 3) | (_r >= 3)
-    observed_src = observed_src[_pass_rating_band & (_tc >= 50)].copy()
+    _pass_confidence_band = (_tc >= 50) | (_c >= 50)
+    observed_src = observed_src[_pass_rating_band & _pass_confidence_band].copy()
     logger.info(
         "Threat assess filter ((rating>=3 OR threatAssessRating>=3), confidence>=50) "
         "coalescing %s / %s: %s -> %s rows.",
